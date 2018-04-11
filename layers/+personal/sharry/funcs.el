@@ -79,10 +79,7 @@
                  'sharry/compile-current-file-and-run)
 
   (require 'flycheck)
-  (progn
-    (setq flycheck-gcc-language-standard "gnu11")
-    (setq flycheck-clang-language-standard "c11")
-    (flycheck-mode 1))
+  (flycheck-mode 1)
   (sharry/disable-c-toggle-auto-newline)
   (semantic-mode 1))
 
