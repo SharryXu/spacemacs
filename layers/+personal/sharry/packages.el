@@ -18,9 +18,7 @@
         emojify
         diredful
         dired-icon
-        geiser
         ac-geiser
-        anaconda-mode
         evil-smartparens
         ))
 
@@ -73,28 +71,8 @@
 (defun sharry/init-dired-icon ()
   (use-package dired-icon))
 
-(defun sharry/init-geiser ()
-  (use-package geiser
-    :defer t
-    :config
-    (setq scheme-program-name sharry-default-scheme-program)
-    (setq geiser-active-implementations '(chicken))
-    (setq geiser-scheme-implementation '(chicken))
-    (setq geiser-repl-use-other-window nil)
-    (setq geiser-repl-query-on-kill-p nil)
-    (setq geiser-debug--display-after nil)
-    :init
-    (require 'geiser)
-    (add-hook 'geiser-mode-hook (lambda ()
-                                  (local-set-key (kbd "<f5>")
-                                                 'sharry/compile-and-run-scheme)))))
-
 (defun sharry/init-ac-geiser ()
   (use-package ac-geiser
-    :defer t))
-
-(defun sharry/init-anaconda-mode ()
-  (use-package anaconda-mode
     :defer t))
 
 (defun sharry/init-evil-smartparens ()

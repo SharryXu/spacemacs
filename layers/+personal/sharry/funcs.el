@@ -78,9 +78,13 @@
   (local-set-key (kbd "<f5>")
                  'sharry/compile-current-file-and-run)
 
+  (require 'flycheck)
+  (progn
+    (setq flycheck-gcc-language-standard "gnu11")
+    (setq flycheck-clang-language-standard "c11")
+    (flycheck-mode 1))
   (sharry/disable-c-toggle-auto-newline)
-  (semantic-mode 1)
-  (flycheck-mode 1))
+  (semantic-mode 1))
 
 (defun sharry/set-window-size-and-position ()
   "Setup window's size and position according to resolution."
