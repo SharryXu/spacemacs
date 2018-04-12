@@ -68,15 +68,38 @@
          "0.5 sec" nil 'delete-windows-on
          (get-buffer-create "*compilation*"))
         (message "No errors.")))
-  (message "%s" (shell-command-to-string "./a.out")))
+  (async-shell-command "./a.out")
+  (select-window (previous-window)))
+
+(defun sharry/get-buffer-name (buffer-names pattern)
+  "Get matched buffer name from BUFFER-NAMES using PATTERN."
+  (cond
+   ((null buffer-names) '())
+   ((string-match-p (regexp-quote pattern) (car buffer-names))
+       (car buffer-names))
+   ((sharry/get-buffer-name (cdr buffer-names) pattern))))
+
+(defun sharry/kill-async-shell-buffer ()
+  "Kill buffer which name is *Async Shell Command*."
+  (interactive)
+  (let ((all-buffers-names (mapcar (function buffer-name) (buffer-list)))
+        (async-shell-name sharry-async-shell-buffer-name))
+    (setq-local async-shell-buffer (sharry/get-buffer-name all-buffers-names async-shell-name))
+    (if async-shell-buffer
+        (kill-buffer async-shell-buffer)
+      (message "No buffer has name `%s'." sharry-async-shell-buffer-name))))
 
 (defun sharry/configure-c-c++-mode ()
   (local-set-key (kbd ";")
                  'sharry/format-c-c++-code-type-semi&comma)
   (local-set-key (kbd "}")
                  'sharry/format-c-c++-code-type-brace)
+  ;; Start debug
   (local-set-key (kbd "<f5>")
                  'sharry/compile-current-file-and-run)
+  ;; Stop debug
+  (local-set-key (kbd "<f8>")
+                 'sharry/kill-async-shell-buffer)
 
   (require 'flycheck)
   (flycheck-mode 1)

@@ -24,9 +24,7 @@
 
 (defun sharry/init-json-mode ()
   (use-package json-mode
-    :defer t
-    :init
-    (message "Initializing json mode...")))
+    :defer t))
 
 (defun sharry/init-evil-terminal-cursor-changer ()
   (use-package evil-terminal-cursor-changer
