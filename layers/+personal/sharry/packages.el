@@ -12,10 +12,10 @@
 (setq sharry-packages
       '(
         json-mode
+        ;; Based on the changelog in master branch,
+        ;; this package has some issues in some terminals.
         evil-terminal-cursor-changer
-        wakatime-mode
         osx-clipboard
-        emojify
         diredful
         dired-icon
         ac-geiser
@@ -36,15 +36,11 @@
     ;; evil-motion-state-cursor
     ;; evil-replace-state-cursor
     ;; evil-operator-state-cursor
-    (unless (window-system)
-      (setq evil-insert-state-cursor '((bar . 8) "blue")
-            evil-normal-state-cursor '(box "blue")))))
-
-(defun sharry/init-wakatime-mode ()
-  (use-package wakatime-mode
-    :defer t
+    (setq evil-insert-state-cursor '((bar . 8) "blue")
+          evil-normal-state-cursor '(box "blue"))
     :init
-    (global-wakatime-mode)))
+    (unless (window-system)
+      (evil-terminal-cursor-changer-activate))))
 
 (defun sharry/init-osx-clipboard ()
   (use-package osx-clipboard
@@ -53,15 +49,6 @@
     (require 'core-funcs)
     (when (spacemacs/system-is-mac)
       (osx-clipboard-mode))))
-
-(defun sharry/init-emojify ()
-  (use-package emojify
-    :defer t
-    :config
-    ;; Avoid download emoji png files under the .emacs.d folder.
-    (setq emojify-emojis-dir (file-truename sharry-default-emojis-dir))
-    :init
-    (global-emojify-mode)))
 
 (defun sharry/init-diredful ()
   (use-package diredful))
