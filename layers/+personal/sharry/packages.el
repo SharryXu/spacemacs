@@ -20,6 +20,7 @@
         dired-icon
         ac-geiser
         evil-smartparens
+        diff-hl
         ))
 
 (defun sharry/init-json-mode ()
@@ -65,5 +66,9 @@
     :init
     (require 'smartparens)
     (add-hook 'smartparens-enabled-hook #'evil-smartparens-mode)))
+
+(defun sharry/init-diff-hl ()
+  (use-package diff-hl
+    :defer t))
 
 ;;; packages.el ends here
