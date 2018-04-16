@@ -138,10 +138,10 @@
   "Setup window's size and position according to resolution."
   (interactive)
   (setq initial-frame-alist
-        '((left . sharry-window-left-margin)
-          (top . (+ sharry-window-top-margin sharry-system-tool-bar-height))
-          (width . sharry-window-width-in-chars)
-          (height . sharry-window-height-in-lines))))
+        '((left . 30)
+          (top . (+ 30 50))
+          (width . 200)
+          (height . 60))))
 
 (defun sharry/compile-and-run-scheme ()
   "Quickly run scheme code."
