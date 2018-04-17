@@ -6,6 +6,17 @@
   (untabify begin-position
             end-position))
 
+(defun sharry/get-clang-format-config (folder)
+  (if (locate-dominating-file folder sharry-default-clang-format-config-file-name)
+      "file"
+    sharry-default-clang-format-style))
+
+(defun sharry/clang-format-buffer (begin-position end-position)
+  (when (executable-find "clang-format")
+    (clang-format-region begin-position
+                         end-position
+                         (sharry/get-clang-format-config (file-truename "~")))))
+
 (defun sharry/quick-format ()
   "Format code quickly."
   (interactive)
@@ -17,45 +28,7 @@
     (progn
       (sharry/format-file-content (point-min)
                                   (point-max))
-      (message "Formatting file..."))))
-
-(defun sharry/disable-c-toggle-auto-newline ()
-  "Disable toggle auto-newline."
-  (c-toggle-auto-newline -1))
-
-(defun sharry/clang-format-buffer (begin-position end-position)
-  (when (executable-find "clang-format")
-    (clang-format-region begin-position
-                         end-position)))
-
-(defun sharry/format-c-c++-code-type-brace ()
-  "Format by clang-format when enter '}'."
-  (interactive)
-  (command-execute #'c-electric-brace)
-  (let ((end-position (point-max))
-        (begin-position (point-min)))
-    (progn
-      (sharry/format-file-content begin-position
-                                  end-position)
-      (sharry/clang-format-buffer begin-position
-                                  end-position)
-      (evil-force-normal-state)
-      (save-buffer)
-      (message "Formatting and Saving `%s'..." (buffer-name)))))
-
-(defun sharry/format-c-c++-code-type-semi&comma ()
-  "Format by clang-format when enter ';'."
-  (interactive)
-  (command-execute #'c-electric-semi&comma)
-  (let ((end-position (line-end-position))
-        (begin-position (line-beginning-position)))
-    (progn
-      (sharry/format-file-content begin-position end-position)
-      (when (executable-find "clang-format")
-        (progn
-          (sharry/clang-format-buffer begin-position
-                                      end-position)
-          (message "Formatting `%s'..." (buffer-name)))))))
+      (message "Formatting `%s'..." (buffer-name)))))
 
 (defun sharry/compile-current-file-and-run ()
   "Compile selected file and run."
@@ -102,6 +75,34 @@
       (delete-windows-on match-buffer)
     (message "No window has name `%s'." name)))
 
+(defun sharry/format-c-c++-code-type-brace ()
+  "Format by clang-format when enter '}'."
+  (interactive)
+  (command-execute #'c-electric-brace)
+;;  (let ((end-position (point))
+  ;;      (begin-position (scan-lists (point) -1 0)))
+    (let ((end-position (point-max))
+          (begin-position (point-min)))
+    (progn
+      (sharry/format-file-content begin-position
+                                  end-position)
+      (sharry/clang-format-buffer begin-position
+                                  end-position)
+      (message "Formatting `%s'..." (buffer-name)))))
+
+(defun sharry/format-c-c++-code-type-semi&comma ()
+  "Format by clang-format when enter ';'."
+  (interactive)
+  (command-execute #'c-electric-semi&comma)
+  (let ((end-position (line-end-position))
+        (begin-position (line-beginning-position)))
+    (progn
+      (sharry/format-file-content begin-position
+                                  end-position)
+      (sharry/clang-format-buffer begin-position
+                                  end-position)
+      (message "Formatting `%s'..." (buffer-name)))))
+
 (defun sharry/configure-common-c-c++-mode ()
   (local-set-key (kbd ";")
                  'sharry/format-c-c++-code-type-semi&comma)
@@ -116,23 +117,31 @@
                    (interactive)
                    (sharry/kill-buffer-by-name sharry-async-shell-buffer-name)))
 
+  (setq indent-tabs-mode nil)
+
   (require 'flycheck)
   (flycheck-mode 1)
   (semantic-mode 1))
 
 (defun sharry/configure-c-mode ()
+  (sharry/configure-common-c-c++-mode)
+
+  (c-toggle-auto-newline -1)
+
+  (c-set-style "sharry")
+
+  (setq c-c++-default-mode-for-headers 'c-mode)
   (setq c-c++-enable-c++11 nil)
   (setq flycheck-clang-language-standard "gnu99")
-  (setq flycheck-gcc-language-standard "gnu99")
-
-  (sharry/disable-c-toggle-auto-newline)
-
-  (sharry/configure-common-c-c++-mode))
+  (setq flycheck-gcc-language-standard "gnu99"))
 
 (defun sharry/configure-c++-mode ()
-  (setq c-c++-enable-c++11 t)
+  (sharry/configure-common-c-c++-mode)
 
-  (sharry/configure-common-c-c++-mode))
+  (c-set-style "stroustrup")
+
+  (setq c-c++-default-mode-for-headers 'c++-mode)
+  (setq c-c++-enable-c++11 t))
 
 (defun sharry/set-window-size-and-position ()
   "Setup window's size and position according to resolution."
