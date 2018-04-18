@@ -119,8 +119,6 @@
 
   (setq indent-tabs-mode nil)
 
-  (require 'flycheck)
-  (flycheck-mode 1)
   (semantic-mode 1))
 
 (defun sharry/configure-c-mode ()
@@ -133,7 +131,8 @@
   (setq c-c++-default-mode-for-headers 'c-mode)
   (setq c-c++-enable-c++11 nil)
   (setq flycheck-clang-language-standard "gnu99")
-  (setq flycheck-gcc-language-standard "gnu99"))
+  (setq flycheck-gcc-language-standard "gnu99")
+  (setq flycheck-cppcheck-standards "gun99"))
 
 (defun sharry/configure-c++-mode ()
   (sharry/configure-common-c-c++-mode)
