@@ -79,15 +79,14 @@
   "Format by clang-format when enter '}'."
   (interactive)
   (command-execute #'c-electric-brace)
-;;  (let ((end-position (point))
-  ;;      (begin-position (scan-lists (point) -1 0)))
-    (let ((end-position (point-max))
-          (begin-position (point-min)))
+  (let ((end-position (line-end-position))
+        (begin-position (scan-lists (point) -1 0)))
     (progn
       (sharry/format-file-content begin-position
                                   end-position)
       (sharry/clang-format-buffer begin-position
                                   end-position)
+      (evil-force-normal-state)
       (message "Formatting `%s'..." (buffer-name)))))
 
 (defun sharry/format-c-c++-code-type-semi&comma ()
@@ -117,9 +116,7 @@
                    (interactive)
                    (sharry/kill-buffer-by-name sharry-async-shell-buffer-name)))
 
-  (setq indent-tabs-mode nil)
-
-  (semantic-mode 1))
+  (setq indent-tabs-mode nil))
 
 (defun sharry/configure-c-mode ()
   (sharry/configure-common-c-c++-mode)
@@ -151,15 +148,27 @@
           (width . 200)
           (height . 60))))
 
-(defun sharry/compile-and-run-scheme ()
-  "Quickly run scheme code."
-  (interactive)
-  (if (geiser-repl--repl-list)
-      (geiser-eval-region (point-min)
-                          (line-end-position))
+(defun sharry/prepare-geiser-repl ()
+  (unless (geiser-repl--repl-list)
     (progn
       (run-chicken)
       (sharry/delete-window-by-name sharry-chicken-repl-buffer-name))))
+
+(defun sharry/compile-and-run-scheme ()
+  "Quickly run scheme code."
+  (interactive)
+  (sharry/prepare-geiser-repl)
+  (geiser-eval-region (point-min)
+                      (line-end-position)))
+
+(defun sharry/clear-semantic-db ()
+  (interactive)
+  (let ((remove-db-command (concat "rm -rf "
+                                   spacemacs-cache-directory
+                                   "semanticdb")))
+    (if (shell-command remove-db-command)
+        (message "Clear semantic db finished.")
+      (message "Something wrong happened."))))
 
 (defun sharry/configure-geiser-mode ()
   (local-set-key (kbd "<f5>")
