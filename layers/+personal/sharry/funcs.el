@@ -80,7 +80,7 @@
   (interactive)
   (command-execute #'c-electric-brace)
   (let ((end-position (line-end-position))
-        (begin-position (scan-lists (point) -1 0)))
+        (begin-position (scan-lists (point) -1 1)))
     (progn
       (sharry/format-file-content begin-position
                                   end-position)
@@ -158,8 +158,10 @@
   "Quickly run scheme code."
   (interactive)
   (sharry/prepare-geiser-repl)
-  (geiser-eval-region (point-min)
-                      (line-end-position)))
+  (let ((begin-parenthesis-position (scan-lists (point) -1 1))
+        (end-parenthesis-position (line-end-position)))
+    (geiser-eval-region begin-parenthesis-position
+                        end-parenthesis-position)))
 
 (defun sharry/clear-semantic-db ()
   (interactive)
