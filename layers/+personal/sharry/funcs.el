@@ -4,7 +4,7 @@
       (progn
         (shell-command (concat "open -a "
                                sharry-default-browser-name " "
-                               (file-truename (buffer-name))))
+                               (buffer-file-name)))
         (message "Open file in `%s'..." sharry-default-browser-name))
     (message "Current file is not html.")))
 
