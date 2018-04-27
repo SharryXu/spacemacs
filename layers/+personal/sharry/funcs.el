@@ -1,3 +1,13 @@
+(defun sharry/open-html-in-browser ()
+  (interactive)
+  (if (string-match ".*\.html$" (buffer-name))
+      (progn
+        (shell-command (concat "open -a "
+                               sharry-default-browser-name " "
+                               (file-truename (buffer-name))))
+        (message "Open file in `%s'..." sharry-default-browser-name))
+    (message "Current file is not html.")))
+
 (defun sharry/format-file-content (begin-position end-position)
   "Use spaces to substitute tabs, deleteing unnecessary whitespaces and indent all lines."
   (delete-trailing-whitespace)
@@ -181,3 +191,7 @@
                  (lambda ()
                    (interactive)
                    (sharry/delete-window-by-name sharry-chicken-repl-buffer-name))))
+
+(defun sharry/configure-web-mode ()
+  (local-set-key (kbd "<f5>")
+                 'sharry/open-html-in-browser))
