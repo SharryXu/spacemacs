@@ -30,11 +30,12 @@
 (defun sharry/quick-format ()
   "Format code quickly."
   (interactive)
-  (if (string= major-mode "c-mode")
+  (if (or (string= major-mode "c-mode")
+          (string= major-mode "js2-mode"))
       (progn
         (sharry/clang-format-buffer (point-min)
                                     (point-max))
-        (message "Formatting c code..."))
+        (message "Formatting c/c++/javascript code..."))
     (progn
       (sharry/format-file-content (point-min)
                                   (point-max))
