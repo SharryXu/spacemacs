@@ -20,6 +20,7 @@
         ac-geiser
         evil-smartparens
         diff-hl
+        hexo
         ))
 
 (defun sharry/init-evil-terminal-cursor-changer ()
@@ -64,6 +65,10 @@
 
 (defun sharry/init-diff-hl ()
   (use-package diff-hl
+    :defer t))
+
+(defun sharry/init-hexo ()
+  (use-package hexo
     :defer t))
 
 ;;; packages.el ends here

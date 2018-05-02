@@ -202,3 +202,29 @@
 (defun sharry/configure-web-mode ()
   (local-set-key (kbd "<f5>")
                  'sharry/open-html-in-browser))
+
+(defun sharry/open-hexo-blog (blog-path)
+  "Open folder BLOG-PATH as a hexo blog."
+  (interactive "DHexo blog path: ")
+  (hexo blog-path))
+
+(defun sharry/configure-hexo-mode ()
+  "Configure hexo mode."
+  (local-set-key (kbd "n")
+                 'hexo-new)
+  (local-set-key (kbd "R")
+                 'hexo-command-rename-file)
+  (local-set-key (kbd "g r")
+                 'hexo-command-revert-tabulated-list)
+  (local-set-key (kbd "i")
+                 'hexo-command-show-article-info)
+
+  ;; RET is the Return key in a terminal.
+  (local-set-key (kbd "<RET>")
+                 'hexo-command-open-file)
+  ;; return is the Return key in GUI.
+  (local-set-key (kbd "<return>")
+                 'hexo-command-open-file)
+
+  (local-set-key (kbd "<f5>")
+                 'hexo-server-run))
