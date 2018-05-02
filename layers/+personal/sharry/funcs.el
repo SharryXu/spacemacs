@@ -30,16 +30,22 @@
 (defun sharry/quick-format ()
   "Format code quickly."
   (interactive)
-  (if (or (string= major-mode "c-mode")
-          (string= major-mode "js2-mode"))
+  (let ((file-name (buffer-file-name (current-buffer))))
+    (cond
+     ((string-match ".*\.html$" file-name)
+      (web-beautify-html-buffer))
+     ((string-match ".*\.css$" file-name)
+      (web-beautify-css-buffer))
+     ((string-match ".*\.js$" file-name)
+      (web-beautify-js-buffer))
+     ((string-match ".*\.c$" file-name)
       (progn
         (sharry/clang-format-buffer (point-min)
                                     (point-max))
-        (message "Formatting c/c++/javascript code..."))
-    (progn
-      (sharry/format-file-content (point-min)
-                                  (point-max))
-      (message "Formatting `%s'..." (buffer-name)))))
+        (message "Formatting `%s' in c format..." file-name)))
+     ((sharry/format-file-content (point-min)
+                                  (point-max))))
+    (message "Formatting `%s'..." file-name)))
 
 (defun sharry/compile-current-file-and-run ()
   "Compile selected file and run."
