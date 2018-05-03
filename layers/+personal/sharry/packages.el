@@ -21,6 +21,7 @@
         evil-smartparens
         diff-hl
         hexo
+        evil-multiedit
         ))
 
 (defun sharry/init-evil-terminal-cursor-changer ()
@@ -70,5 +71,11 @@
 (defun sharry/init-hexo ()
   (use-package hexo
     :defer t))
+
+(defun sharry/init-evil-multiedit ()
+  (use-package evil-multiedit
+    :defer t
+    :config
+    (evil-multiedit-default-keybinds)))
 
 ;;; packages.el ends here
