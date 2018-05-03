@@ -228,3 +228,7 @@
 
   (local-set-key (kbd "<f5>")
                  'hexo-server-run))
+
+(defun sharry/configure-pdf-view-mode ()
+  "Configure pdf tools."
+  (linum-mode -1))
