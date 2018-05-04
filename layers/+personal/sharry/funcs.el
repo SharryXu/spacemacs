@@ -1,15 +1,16 @@
 (defun sharry/open-html-in-browser ()
+  "Open current html in the specific browser."
   (interactive)
   (if (string-match ".*\.html$" (buffer-name))
       (progn
-        (shell-command (concat "open -a "
-                               sharry-default-browser-name " "
+        (shell-command (format "open -a %s %s"
+                               sharry-default-browser-name
                                (buffer-file-name)))
         (message "Open file in `%s'..." sharry-default-browser-name))
     (message "Current file is not html.")))
 
 (defun sharry/format-file-content (begin-position end-position)
-  "Use spaces to substitute tabs, deleteing unnecessary whitespaces and indent all lines."
+  "Use spaces to substitute tabs and delete unnecessary whitespaces for paragraph between BEGIN-POSITION and END-POSITION."
   (delete-trailing-whitespace)
   (indent-region begin-position
                  end-position)
@@ -39,18 +40,16 @@
      ((string-match ".*\.js$" file-name)
       (web-beautify-js-buffer))
      ((string-match ".*\.c$" file-name)
-      (progn
-        (sharry/clang-format-buffer (point-min)
-                                    (point-max))
-        (message "Formatting `%s' in c format..." file-name)))
+      (sharry/clang-format-buffer (point-min)
+                                  (point-max)))
      ((sharry/format-file-content (point-min)
-                                  (point-max))))
+                                  (- (point-max) 1)))) ;; Remove the EOF char at the end of the file.
     (message "Formatting `%s'..." file-name)))
 
 (defun sharry/compile-current-file-and-run ()
   "Compile selected file and run."
   (interactive)
-  (compile (concat "clang " (buffer-name))))
+  (compile (format "clang %s" (buffer-name))))
 
 (defun sharry/close-compilation-window-if-no-errors (str)
   "Close compilation window if the result STR contains no error messages."
@@ -182,12 +181,9 @@
 
 (defun sharry/clear-semantic-db ()
   (interactive)
-  (let ((remove-db-command (concat "rm -rf "
-                                   spacemacs-cache-directory
-                                   "semanticdb")))
-    (if (shell-command remove-db-command)
-        (message "Clear semantic db finished.")
-      (message "Something wrong happened."))))
+  (if (shell-command (format "rm -rf %s/semanticdb" spacemacs-cache-directory))
+      (message "Clear semantic db finished.")
+    (message "Something wrong happened.")))
 
 (defun sharry/configure-geiser-mode ()
   (local-set-key (kbd "<f5>")
