@@ -17,8 +17,8 @@
   (untabify begin-position
             end-position))
 
-(defun sharry/get-clang-format-config (folder)
-  (if (locate-dominating-file folder sharry-default-clang-format-config-file-name)
+(defun sharry/get-clang-format-config ()
+  (if (file-exists-p sharry-default-clang-format-config-file-path)
       "file"
     sharry-default-clang-format-style))
 
@@ -26,7 +26,7 @@
   (when (executable-find "clang-format")
     (clang-format-region begin-position
                          end-position
-                         (sharry/get-clang-format-config (file-truename "~")))))
+                         (sharry/get-clang-format-config))))
 
 (defun sharry/quick-format ()
   "Format code quickly."
@@ -227,4 +227,19 @@
 
 (defun sharry/configure-pdf-view-mode ()
   "Configure pdf tools."
-  (linum-mode -1))
+  (nlinum-mode -1))
+
+(defun sharry/configure-dired-mode ()
+  "Configure dired mode."
+  (require 'all-the-icons-dired)
+  (all-the-icons-dired-mode 1)
+
+  (require 'diff-hl)
+  (diff-hl-dired-mode 1)
+
+  (if (file-exists-p sharry-default-diredful-config-file-path)
+      (progn
+        (require 'diredful)
+        (setq diredful-init-file sharry-default-diredful-config-file-path)
+        (diredful-mode 1))
+    (message "The diredful file is not existed.")))

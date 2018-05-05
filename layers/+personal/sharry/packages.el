@@ -15,13 +15,14 @@
         ;; this package has some issues in some terminals.
         evil-terminal-cursor-changer
         osx-clipboard
+        all-the-icons-dired
         diredful
-        dired-icon
         ac-geiser
         evil-smartparens
         diff-hl
         hexo
         evil-multiedit
+        nlinum
         ))
 
 (defun sharry/init-evil-terminal-cursor-changer ()
@@ -48,11 +49,8 @@
     (when (spacemacs/system-is-mac)
       (osx-clipboard-mode))))
 
-(defun sharry/init-diredful ()
-  (use-package diredful))
-
-(defun sharry/init-dired-icon ()
-  (use-package dired-icon))
+(defun sharry/init-all-the-icons-dired ()
+  (use-package all-the-icons-dired))
 
 (defun sharry/init-ac-geiser ()
   (use-package ac-geiser
@@ -77,5 +75,11 @@
     :defer t
     :config
     (evil-multiedit-default-keybinds)))
+
+(defun sharry/init-nlinum ()
+  (use-package nlinum))
+
+(defun sharry/init-diredful ()
+  (use-package diredful))
 
 ;;; packages.el ends here

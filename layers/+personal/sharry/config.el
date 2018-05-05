@@ -4,7 +4,9 @@
 
 (defconst sharry-chicken-repl-buffer-name "Chicken REPL")
 
-(defconst sharry-default-clang-format-config-file-name ".clang-format")
+(defconst sharry-default-clang-format-config-file-path "~/.clang-format")
+
+(defconst sharry-default-diredful-config-file-path "~/.diredful-conf.el")
 
 (defconst sharry-default-clang-format-style
   "{
