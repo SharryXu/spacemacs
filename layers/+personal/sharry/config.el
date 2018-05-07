@@ -1,5 +1,3 @@
-(defconst sharry-default-browser-name "firefox")
-
 (defconst sharry-async-shell-buffer-name "Async Shell Command")
 
 (defconst sharry-chicken-repl-buffer-name "Chicken REPL")
@@ -7,6 +5,8 @@
 (defconst sharry-default-clang-format-config-file-path "~/.clang-format")
 
 (defconst sharry-default-diredful-config-file-path "~/.diredful-conf.el")
+
+(defconst sharry-local-hexo-server-default-address "http://localhost:4000")
 
 (defconst sharry-default-clang-format-style
   "{

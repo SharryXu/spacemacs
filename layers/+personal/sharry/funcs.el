@@ -1,12 +1,15 @@
+;; Default function browse-url-default-browser has some problems.
+(defun sharry/open-url-or-file (url-or-file-name)
+  "Open url or file in default browser."
+  (interactive)
+  (require 'browse-url)
+  (browse-url-default-browser url-or-file-name))
+
 (defun sharry/open-html-in-browser ()
   "Open current html in the specific browser."
   (interactive)
   (if (string-match ".*\.html$" (buffer-name))
-      (progn
-        (shell-command (format "open -a %s %s"
-                               sharry-default-browser-name
-                               (buffer-file-name)))
-        (message "Open file in `%s'..." sharry-default-browser-name))
+      (sharry/open-url-or-file (buffer-name))
     (message "Current file is not html.")))
 
 (defun sharry/format-file-content (begin-position end-position)
@@ -204,14 +207,24 @@
   (interactive "DHexo blog path: ")
   (hexo blog-path))
 
+(defun sharry/hexo-server-run-in-background ()
+  "Run hexo server in the background and focus on the origin buffer."
+  (interactive)
+  (let ((origin-buffer-name (buffer-name)))
+    (hexo-server-run)
+    ;; Change to normal view so that view log is more convenient.
+    (evil-normal-state)
+    (switch-to-buffer origin-buffer-name))
+  (run-at-time
+   "13.0 sec" nil 'sharry/open-url-or-file
+   sharry-local-hexo-server-default-address))
+
 (defun sharry/configure-hexo-mode ()
   "Configure hexo mode."
   (local-set-key (kbd "n")
                  'hexo-new)
   (local-set-key (kbd "R")
                  'hexo-command-rename-file)
-  (local-set-key (kbd "g r")
-                 'hexo-command-revert-tabulated-list)
   (local-set-key (kbd "i")
                  'hexo-command-show-article-info)
 
@@ -223,7 +236,9 @@
                  'hexo-command-open-file)
 
   (local-set-key (kbd "<f5>")
-                 'hexo-server-run))
+                 'sharry/hexo-server-run-in-background)
+  (local-set-key (kbd "<f6>")
+                 'hexo-server-stop))
 
 (defun sharry/configure-pdf-view-mode ()
   "Configure pdf tools."
