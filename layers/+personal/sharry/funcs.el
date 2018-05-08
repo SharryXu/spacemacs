@@ -3,6 +3,7 @@
   "Open url or file in default browser."
   (interactive)
   (require 'browse-url)
+  ;; TODO: Add --devtools
   (browse-url-default-browser url-or-file-name))
 
 (defun sharry/open-html-in-browser ()
