@@ -23,6 +23,9 @@
         hexo
         evil-multiedit
         nlinum
+        emms
+        emms-bilibili
+        emms-player-mpv
         ))
 
 (defun sharry/init-evil-terminal-cursor-changer ()
@@ -76,10 +79,24 @@
     :config
     (evil-multiedit-default-keybinds)))
 
-(defun sharry/init-nlinum ()
-  (use-package nlinum))
-
 (defun sharry/init-diredful ()
   (use-package diredful))
+
+(defun sharry/init-emms ()
+  (use-package emms))
+
+(defun sharry/init-emms-bilibili ()
+  (use-package emms-bilibili
+    :ensure t
+    :commands
+    (emms-bilibili)
+    :config
+    (setq emms-bilibili-mid sharry-bilibili-account-id)))
+
+(defun sharry/init-emms-player-mpv ()
+  (use-package emms-player-mpv
+    :defer t
+    :config
+    (add-to-list 'emms-player-list 'emms-player-mpv)))
 
 ;;; packages.el ends here
