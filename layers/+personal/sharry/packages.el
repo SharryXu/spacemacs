@@ -22,7 +22,6 @@
         diff-hl
         hexo
         evil-multiedit
-        nlinum
         emms
         emms-bilibili
         emms-player-mpv
