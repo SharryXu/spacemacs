@@ -14,6 +14,7 @@
         (company-plsense :requires company)
         (cperl-mode :location built-in)
         flycheck
+        realgud
         smartparens
         ))
 
@@ -22,8 +23,8 @@
     :defer t
     :init
     (spacemacs|add-company-backends
-      :backends company-plsense
-      :modes cperl-mode)))
+     :backends company-plsense
+     :modes cperl-mode)))
 
 (defun perl5/init-cperl-mode ()
   (use-package cperl-mode
@@ -116,10 +117,13 @@
         "v" 'cperl-select-this-pod-or-here-doc)
 
       (font-lock-add-keywords 'cperl-mode
-                              '(("\\_<say\\_>" . cperl-nonoverridable-face))))))
+                      '(("\\_<say\\_>" . cperl-nonoverridable-face))))))
 
 (defun perl5/post-init-flycheck ()
   (spacemacs/enable-flycheck 'cperl-mode))
+
+(defun perl5/post-init-realgud()
+  (spacemacs/add-realgud-debugger 'cperl-mode "trepan.pl"))
 
 (defun perl5/post-init-smartparens ()
   ;; fixs a bug with electric mode and smartparens https://github.com/syl20bnr/spacemacs/issues/480
