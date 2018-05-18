@@ -69,7 +69,7 @@
       (unless (configuration-layer/package-used-p 'ibuffer)
         (evil-ex-define-cmd "buffers" 'helm-buffers-list))
       ;; use helm by default for M-x, C-x C-f, and C-x b
-      (unless (configuration-layer/package-used-p 'smex)
+      (unless (configuration-layer/layer-usedp 'smex)
         (global-set-key (kbd "M-x") 'helm-M-x))
       (global-set-key (kbd "C-x C-f") 'spacemacs/helm-find-files)
       (global-set-key (kbd "C-x b") 'helm-buffers-list)
@@ -118,7 +118,7 @@
       ;; to overwrite any key binding
       (add-hook 'emacs-startup-hook
                 (lambda ()
-                  (unless (configuration-layer/package-used-p 'smex)
+                  (unless (configuration-layer/layer-usedp 'smex)
                     (spacemacs/set-leader-keys
                       dotspacemacs-emacs-command-key 'helm-M-x))))
       (helm-mode))
@@ -140,9 +140,13 @@
         (define-key helm-bookmark-map (kbd "C-/") 'helm-bookmark-help))
       (with-eval-after-load 'helm-bookmark
         (simpler-helm-bookmark-keybindings))
-      (define-key helm-buffer-map (kbd "RET") 'spacemacs/helm-find-buffers-windows)
-      (define-key helm-generic-files-map (kbd "RET") 'spacemacs/helm-find-files-windows)
-      (define-key helm-find-files-map (kbd "RET") 'spacemacs/helm-find-files-windows))))
+      (when (configuration-layer/package-used-p 'winum)
+        (define-key helm-buffer-map
+          (kbd "RET") 'spacemacs/helm-find-buffers-windows)
+        (define-key helm-generic-files-map
+          (kbd "RET") 'spacemacs/helm-find-files-windows)
+        (define-key helm-find-files-map
+          (kbd "RET") 'spacemacs/helm-find-files-windows)))))
 
 (defun helm/init-helm-ag ()
   (use-package helm-ag
