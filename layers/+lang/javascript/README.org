@@ -52,7 +52,7 @@ If you install these in non-standard locations, then add the following to your =
 #+END_SRC
 
 ** web-beautify
-See [[file:+tools/web-beautify/README.org][web-beautify layer]] documentation.
+See [[file:../../+tools/web-beautify/README.org][web-beautify layer]] documentation.
 
 ** Choosing a backend
 To choose a default backend set the layer variable =javascript-backend=:
@@ -76,7 +76,7 @@ Backend can be chosen on a per project basis using directory local variables
 
 * Backends
 ** Tern
-See [[file:+tools/tern/README.org][tern layer]] documentation.
+See [[file:../../+tools/tern/README.org][tern layer]] documentation.
 
 ** Language Server Protocol
 You just have to install javascript and typescript language server packages:

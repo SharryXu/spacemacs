@@ -15,14 +15,5 @@
   (use-package web-beautify
     :defer t
     :init
-    (dolist (x spacemacs-web-beautify--modes)
-      (spacemacs/set-leader-keys-for-major-mode (car x) "=" (cadr x)))
-    (progn
-      (spacemacs/set-leader-keys-for-major-mode 'js2-mode
-        "=" 'web-beautify-js)
-      (spacemacs/set-leader-keys-for-major-mode 'json-mode
-        "=" 'web-beautify-js)
-      (spacemacs/set-leader-keys-for-major-mode 'web-mode
-        "=" 'web-beautify-html)
-      (spacemacs/set-leader-keys-for-major-mode 'css-mode
-        "=" 'web-beautify-css))))
+    (dolist (x spacemacs--web-beautify-modes)
+      (spacemacs/set-leader-keys-for-major-mode (car x) "=" (cdr x)))))

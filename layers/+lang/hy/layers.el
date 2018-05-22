@@ -1,4 +1,4 @@
-;;; config.el --- web-beautify Layer configuration File for Spacemacs
+;;; layers.el --- Hy Layer layers File for Spacemacs
 ;;
 ;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
 ;;
@@ -9,7 +9,4 @@
 ;;
 ;;; License: GPLv3
 
-;; Variables
-
-(defvar spacemacs--web-beautify-modes nil
-  "List of cons cell (mode . web-beautify-function).")
+(configuration-layer/declare-layers '(python))
