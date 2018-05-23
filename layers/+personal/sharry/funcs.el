@@ -259,7 +259,3 @@
         (setq diredful-init-file sharry-default-diredful-config-file-path)
         (diredful-mode 1))
     (message "The diredful file is not existed.")))
-
-(defun sharry/configure-javascript-mode ()
-  (add-to-list 'company-backends 'company-tern)
-  (tern-mode 1))
