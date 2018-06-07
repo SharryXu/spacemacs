@@ -7,6 +7,7 @@ eproject.lst
 .smex-items
 \#*
 .places
+.directory
 .cache
 /eww-bookmarks
 eshell/history
@@ -46,6 +47,7 @@ python-*-docs-html
 /srecode-map.el
 /recentf
 .mc-lists.el
+nov-places
 
 # Private directory
 private/
