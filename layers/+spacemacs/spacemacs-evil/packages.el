@@ -115,9 +115,12 @@
       ;; disable pulses as it is more distracting than useful and
       ;; less readable.
       (setq evil-goggles-pulse nil
-            evil-goggles-async-duration 0.2
-            evil-goggles-blocking-duration 0.12)
-      (evil-goggles-mode))
+            evil-goggles-async-duration 0.1
+            evil-goggles-blocking-duration 0.05)
+      (if (or vim-style-visual-feedback
+              hybrid-style-visual-feedback)
+          (evil-goggles-mode)
+        (evil-goggles-mode -1)))
     :config
     (spacemacs|hide-lighter evil-goggles-mode)))
 
@@ -131,12 +134,17 @@
             iedit-toggle-key-default nil)
       (spacemacs/set-leader-keys "se" 'evil-iedit-state/iedit-mode))
     :config
-    ;; activate leader in iedit and iedit-insert states
-    (define-key evil-iedit-state-map
-      (kbd dotspacemacs-leader-key) spacemacs-default-map)
-    (spacemacs//iedit-insert-state-hybrid dotspacemacs-editing-style)
-    (add-hook 'spacemacs-editing-style-hook
-              #'spacemacs//iedit-insert-state-hybrid)))
+    (progn
+      ;; set TAB action
+      (add-hook 'spacemacs-editing-style-hook
+                #'spacemacs//iedit-state-TAB-key-bindings)
+      (spacemacs//iedit-state-TAB-key-bindings dotspacemacs-editing-style)
+      ;; activate leader in iedit and iedit-insert states
+      (define-key evil-iedit-state-map
+        (kbd dotspacemacs-leader-key) spacemacs-default-map)
+      (spacemacs//iedit-insert-state-hybrid dotspacemacs-editing-style)
+      (add-hook 'spacemacs-editing-style-hook
+                #'spacemacs//iedit-insert-state-hybrid))))
 
 (defun spacemacs-evil/init-evil-indent-plus ()
   (use-package evil-indent-plus
