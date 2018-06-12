@@ -75,18 +75,7 @@
              (t 'wave))
             powerline-image-apple-rgb (eq window-system 'ns)
             powerline-scale (or (spacemacs/mode-line-separator-scale) 1.5)
-            powerline-height (spacemacs/compute-mode-line-height))
-      (spacemacs|do-after-display-system-init
-       ;; seems to be needed to avoid weird graphical artefacts with the
-       ;; first graphical client
-       ;;
-       ;; It is important that no functions that do font measurements are
-       ;; called outside of this hook or the results will be wrong if spacemacs
-       ;; is started in daemon mode (emacs --daemon). This is why the height
-       ;; is computed here
-       (setq powerline-height (spacemacs/compute-mode-line-height))
-       (require 'spaceline)
-       (spaceline-compile)))
+            powerline-height (spacemacs/compute-mode-line-height)))
     :config
     (progn
       (spacemacs/customize-powerline-faces)
