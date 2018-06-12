@@ -1,16 +1,21 @@
-(defconst sharry-async-shell-buffer-name "Async Shell Command")
+;;; package --- Summary
 
-(defconst sharry-chicken-repl-buffer-name "Chicken REPL")
+;;; Commentary:
 
-(defconst sharry-default-clang-format-config-file-path "~/.clang-format")
+;;; Code:
+(defvar sharry-async-shell-buffer-name "Async Shell Command")
 
-(defconst sharry-default-diredful-config-file-path "~/.diredful-conf.el")
+(defvar sharry-chicken-repl-buffer-name "Chicken REPL")
 
-(defconst sharry-local-hexo-server-default-address "http://localhost:4000")
+(defvar sharry-default-clang-format-config-file-path "~/.clang-format")
 
-(defconst sharry-bilibili-account-id 204777266)
+(defvar sharry-default-diredful-config-file-path "~/.diredful-conf.el")
 
-(defconst sharry-default-clang-format-style
+(defvar sharry-local-hexo-server-default-address "http://localhost:4000")
+
+(defvar sharry-bilibili-account-id 204777266)
+
+(defvar sharry-default-clang-format-style
   "{
      BasedOnStyle: LLVM,
      IndentWidth: 4,
@@ -19,7 +24,7 @@
   }"
   "Default Style. If no .clang-format file can be found.")
 
-(defconst sharry-c-style
+(c-add-style "sharry"
   '((indent-tabs-mode . nil)
     (c-basic-offset . 4)
     (tab-width . 4)
@@ -48,7 +53,8 @@
                              ;; and no auto newline at the end
                              (class-close)
                              ))
-    )
-  "Sharry's own C Programming Style")
+    ))
 
-(c-add-style "sharry" sharry-c-style)
+(provide 'config)
+
+;;; config.el ends here

@@ -1,6 +1,12 @@
+;;; package --- Summary
+
+;;; Commentary:
+
+;;; Code:
+
 ;; Default function browse-url-default-browser has some problems.
 (defun sharry/open-url-or-file (url-or-file-name)
-  "Open url or file in default browser."
+  "Open URL-OR-FILE-NAME in default browser."
   (interactive)
   (require 'browse-url)
   ;; TODO: Add --devtools
@@ -9,7 +15,7 @@
 (defun sharry/open-html-in-browser ()
   "Open current html in the specific browser."
   (interactive)
-  (if (string-match ".*\.html$" (buffer-name))
+  (if (string-match ".*\\.html$" (buffer-name))
       (sharry/open-url-or-file (buffer-name))
     (message "Current file is not html.")))
 
@@ -22,11 +28,13 @@
             end-position))
 
 (defun sharry/get-clang-format-config ()
+  "Load custom clang-format configuration."
   (if (file-exists-p sharry-default-clang-format-config-file-path)
       "file"
     sharry-default-clang-format-style))
 
 (defun sharry/clang-format-buffer (begin-position end-position)
+  "Use clang-format to format region from BEGIN-POSITION to END-POSITION."
   (when (executable-find "clang-format")
     (clang-format-region begin-position
                          end-position
@@ -37,13 +45,13 @@
   (interactive)
   (let ((file-name (buffer-file-name (current-buffer))))
     (cond
-     ((string-match ".*\.html$" file-name)
+     ((string-match ".*\\.html$" file-name)
       (web-beautify-html-buffer))
-     ((string-match ".*\.css$" file-name)
+     ((string-match ".*\\.css$" file-name)
       (web-beautify-css-buffer))
-     ((string-match ".*\.js$" file-name)
+     ((string-match ".*\\.js$" file-name)
       (web-beautify-js-buffer))
-     ((string-match ".*\.c$" file-name)
+     ((string-match ".*\\.c$" file-name)
       (sharry/clang-format-buffer (point-min)
                                   (point-max)))
      ((sharry/format-file-content (point-min)
@@ -56,7 +64,7 @@
   (compile (format "clang %s" (buffer-name))))
 
 (defun sharry/close-compilation-window-if-no-errors (str)
-  "Close compilation window if the result STR contains no error messages."
+  "Close compilation window if the result STR contain no error messages."
   (if (null (string-match ".*exited abnormally.*" str))
       (progn
         (run-at-time
@@ -75,22 +83,24 @@
    ((sharry/get-buffer--by-name (cdr buffer-names) pattern))))
 
 (defun sharry/get-buffer-by-name (pattern)
+  "Get buffer based on PATTERN."
   (let ((all-buffer-names (mapcar (function buffer-name) (buffer-list))))
     (cond
      ((null all-buffer-names) nil)
-     ((sharry/get-buffer--by-name all-buffer-names name)))))
+     ((sharry/get-buffer--by-name all-buffer-names pattern)))))
 
 (defun sharry/kill-buffer-by-name (name)
   "Kill buffer which name is NAME."
   (interactive)
-  (setq-local match-buffer (sharry/get-buffer-by-name name))
+  (defvar match-buffer (sharry/get-buffer-by-name name))
   (if match-buffer
       (kill-buffer match-buffer)
     (message "No buffer has name `%s'." name)))
 
 (defun sharry/delete-window-by-name (name)
+  "Close window which name is NAME."
   (interactive)
-  (setq-local match-buffer (sharry/get-buffer-by-name name))
+  (defvar match-buffer (sharry/get-buffer-by-name name))
   (if match-buffer
       (delete-windows-on match-buffer)
     (message "No window has name `%s'." name)))
@@ -98,9 +108,9 @@
 (defun sharry/format-c-c++-code-type-brace ()
   "Format by clang-format when enter '}'."
   (interactive)
-  (command-execute #'c-electric-brace)
+	(c-electric-brace 1)
   (let ((end-position (line-end-position))
-        (begin-position (scan-lists (point) -1 1)))
+        (begin-position (scan-lists (- (point) 1) -1 1)))
     (progn
       (sharry/format-file-content begin-position
                                   end-position)
@@ -112,7 +122,7 @@
 (defun sharry/format-c-c++-code-type-semi&comma ()
   "Format by clang-format when enter ';'."
   (interactive)
-  (command-execute #'c-electric-semi&comma)
+	(c-electric-semi&comma 1)
   (let ((end-position (line-end-position))
         (begin-position (line-beginning-position)))
     (progn
@@ -123,6 +133,7 @@
       (message "Formatting `%s'..." (buffer-name)))))
 
 (defun sharry/configure-common-c-c++-mode ()
+  "Configure common part of C and C++."
   (local-set-key (kbd ";")
                  'sharry/format-c-c++-code-type-semi&comma)
   (local-set-key (kbd "}")
@@ -139,25 +150,27 @@
   (setq indent-tabs-mode nil))
 
 (defun sharry/configure-c-mode ()
+  "Configure C mode."
   (sharry/configure-common-c-c++-mode)
 
   (c-toggle-auto-newline -1)
 
   (c-set-style "sharry")
 
-  (setq c-c++-default-mode-for-headers 'c-mode)
-  (setq c-c++-enable-c++11 nil)
-  (setq flycheck-clang-language-standard "gnu99")
-  (setq flycheck-gcc-language-standard "gnu99")
-  (setq flycheck-cppcheck-standards "gun99"))
+  (defvar c-c++-default-mode-for-headers 'c-mode)
+  (defvar c-c++-enable-c++11 nil)
+  (defvar flycheck-clang-language-standard "gnu99")
+  (defvar flycheck-gcc-language-standard "gnu99")
+  (defvar flycheck-cppcheck-standards "gun99"))
 
 (defun sharry/configure-c++-mode ()
+  "Configure C++ mode."
   (sharry/configure-common-c-c++-mode)
 
   (c-set-style "stroustrup")
 
-  (setq c-c++-default-mode-for-headers 'c++-mode)
-  (setq c-c++-enable-c++11 t))
+  (defvar c-c++-default-mode-for-headers 'c++-mode)
+  (defvar c-c++-enable-c++11 t))
 
 (defun sharry/set-window-size-and-position ()
   "Setup window's size and position according to resolution."
@@ -169,6 +182,7 @@
           (height . 60))))
 
 (defun sharry/prepare-geiser-repl ()
+  "Run geiser in the background."
   (unless (geiser-repl--repl-list)
     (progn
       (run-chicken)
@@ -184,12 +198,14 @@
                         end-parenthesis-position)))
 
 (defun sharry/clear-semantic-db ()
+  "Clear semantic database."
   (interactive)
   (if (shell-command (format "rm -rf %s/semanticdb" spacemacs-cache-directory))
       (message "Clear semantic db finished.")
     (message "Something wrong happened.")))
 
 (defun sharry/configure-geiser-mode ()
+  "Configure geiser mode."
   (local-set-key (kbd "<f5>")
                  'sharry/compile-and-run-scheme)
   (local-set-key (kbd "C-x C-e")
@@ -200,6 +216,7 @@
                    (sharry/delete-window-by-name sharry-chicken-repl-buffer-name))))
 
 (defun sharry/configure-web-mode ()
+  "Configure web mode."
   (local-set-key (kbd "<f5>")
                  'sharry/open-html-in-browser))
 
@@ -256,6 +273,10 @@
   (if (file-exists-p sharry-default-diredful-config-file-path)
       (progn
         (require 'diredful)
-        (setq diredful-init-file sharry-default-diredful-config-file-path)
+        (defvar diredful-init-file sharry-default-diredful-config-file-path)
         (diredful-mode 1))
     (message "The diredful file is not existed.")))
+
+(provide 'funs)
+
+;;; funcs.el ends here
