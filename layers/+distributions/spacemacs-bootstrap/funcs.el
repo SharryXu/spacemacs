@@ -89,6 +89,11 @@ For evil states that also need an entry to `spacemacs-evil-cursors' use
         (evil-select-search-module 'evil-search-module 'isearch)
       (setq-default evil-search-module 'isearch)))))
 
+(defun spacemacs/evil-search-clear-highlight ()
+  "Clear evil-search or evil-ex-search persistent highlights."
+  (interactive)
+  (evil-ex-nohighlight)) ; `/' highlights
+
 (defun spacemacs/evil-smart-doc-lookup ()
   "Run documentation lookup command specific to the major mode.
 Use command bound to `SPC m h h` if defined, otherwise fall back
@@ -211,7 +216,8 @@ Cache the found value in `spacemacs-env-vars-file'."
       (require 'exec-path-from-shell)
       (exec-path-from-shell-copy-env var)
       (with-temp-file spacemacs-env-vars-file
-        (insert-file-contents spacemacs-env-vars-file)
+        (when (file-exists-p spacemacs-env-vars-file)
+          (insert-file-contents spacemacs-env-vars-file))
         (print (list 'setenv var
                      (if (getenv var)
                          (getenv var)
