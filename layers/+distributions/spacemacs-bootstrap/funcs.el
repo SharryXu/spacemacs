@@ -33,11 +33,11 @@
                   (k (car var))
                   (v (cadr var)))
              (spacemacs-buffer/message "  - %s=%s" k v)
-             (if (string-equal "PATH" k)
-                 (let ((paths (split-string v path-separator)))
-                   (dolist (p paths)
-                     (add-to-list 'exec-path p)))
-               (setenv k v)))))
+             (when (string-equal "PATH" k)
+               (let ((paths (split-string v path-separator)))
+                 (dolist (p paths)
+                   (add-to-list 'exec-path p))))
+             (setenv k v))))
      ;; be sure we keep the default shell in this Emacs session
      ;; this is to prevent potential issues with packages which could
      ;; expect a default shell
@@ -170,11 +170,11 @@ the boundaries of the text object."
                                           ,(regexp-quote start)
                                           ,(regexp-quote end))
      (with-eval-after-load 'evil-surround
-       (push (cons (string-to-char ,key)
-                   (if ,end
-                       (cons ,start ,end)
-                     ,start))
-             evil-surround-pairs-alist))))
+       (add-to-list 'evil-surround-pairs-alist
+                    (cons (string-to-char ,key)
+                          (if ,end
+                              (cons ,start ,end)
+                            ,start))))))
 
 (defmacro spacemacs|define-text-object-regexp (key name start-regexp end-regexp)
   "Define a text object.
