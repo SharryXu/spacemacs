@@ -147,7 +147,6 @@
                    (interactive)
                    (sharry/kill-buffer-by-name sharry-async-shell-buffer-name)))
 
-	(require 'auto-complete-mode)
 	(auto-complete-mode 1)
 
   (setq indent-tabs-mode nil))
