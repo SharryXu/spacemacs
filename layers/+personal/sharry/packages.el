@@ -13,22 +13,23 @@
 
 ;;; Code:
 (defvar sharry-packages
-      '(
-        ;; Based on the changelog in master branch,
-        ;; this package has some issues in some terminals.
-        evil-terminal-cursor-changer
-        osx-clipboard
-        all-the-icons-dired
-        diredful
-        ac-geiser
-        evil-smartparens
-        diff-hl
-        hexo
-        evil-multiedit
-        emms
-        emms-bilibili
-        emms-player-mpv
-        ))
+  '(
+    ;; Based on the changelog in master branch,
+    ;; this package has some issues in some terminals.
+    evil-terminal-cursor-changer
+    osx-clipboard
+    all-the-icons-dired
+    diredful
+    ac-geiser
+    evil-smartparens
+    diff-hl
+    hexo
+    evil-multiedit
+    emms
+    emms-bilibili
+    emms-player-mpv
+		exec-path-from-shell
+    ))
 
 (defun sharry/init-evil-terminal-cursor-changer ()
 	"Init package."
@@ -112,6 +113,13 @@
     :defer t
     :config
     (add-to-list 'emms-player-list 'emms-player-mpv)))
+
+(defun sharry/init-exec-path-from-shell ()
+	"Init package."
+	(use-package exec-path-from-shell
+		:defer t
+		:config
+		(exec-path-from-shell-initialize)))
 
 (provide 'packages)
 
