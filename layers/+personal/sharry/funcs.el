@@ -15,7 +15,7 @@
 (defun sharry/open-html-in-browser ()
   "Open current html in the specific browser."
   (interactive)
-  (if (string-match ".*\\.html$" (buffer-name))
+  (if (string-match ".*\.html$" (buffer-name))
       (sharry/open-url-or-file (buffer-name))
     (message "Current file is not html.")))
 
@@ -45,13 +45,13 @@
   (interactive)
   (let ((file-name (buffer-file-name (current-buffer))))
     (cond
-     ((string-match ".*\\.html$" file-name)
+     ((string-match ".*\.html$" file-name)
       (web-beautify-html-buffer))
-     ((string-match ".*\\.css$" file-name)
+     ((string-match ".*\.css$" file-name)
       (web-beautify-css-buffer))
-     ((string-match ".*\\.js$" file-name)
+     ((string-match ".*\.js$" file-name)
       (web-beautify-js-buffer))
-     ((string-match ".*\\.c$" file-name)
+     ((string-match ".*\.c$" file-name)
       (sharry/clang-format-buffer (point-min)
                                   (point-max)))
      ((sharry/format-file-content (point-min)
