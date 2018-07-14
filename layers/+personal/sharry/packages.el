@@ -25,9 +25,6 @@
     diff-hl
     hexo
     evil-multiedit
-    emms
-    emms-bilibili
-    emms-player-mpv
 		exec-path-from-shell
     ))
 
@@ -93,26 +90,6 @@
 (defun sharry/init-diredful ()
 	"Init package."
   (use-package diredful))
-
-(defun sharry/init-emms ()
-	"Init package."
-  (use-package emms))
-
-(defun sharry/init-emms-bilibili ()
-	"Init package."
-  (use-package emms-bilibili
-    :ensure t
-    :commands
-    (emms-bilibili)
-    :config
-    (setq emms-bilibili-mid sharry-bilibili-account-id)))
-
-(defun sharry/init-emms-player-mpv ()
-	"Init package."
-  (use-package emms-player-mpv
-    :defer t
-    :config
-    (add-to-list 'emms-player-list 'emms-player-mpv)))
 
 (defun sharry/init-exec-path-from-shell ()
 	"Init package."

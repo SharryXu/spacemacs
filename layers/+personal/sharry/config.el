@@ -13,8 +13,6 @@
 
 (defvar sharry-local-hexo-server-default-address "http://localhost:4000")
 
-(defvar sharry-bilibili-account-id 204777266)
-
 (defvar sharry-default-clang-format-style
   "{
      BasedOnStyle: LLVM,
