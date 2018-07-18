@@ -94,9 +94,7 @@
 (defun sharry/init-exec-path-from-shell ()
 	"Init package."
 	(use-package exec-path-from-shell
-		:defer t
-		:config
-		(exec-path-from-shell-initialize)))
+		:defer t))
 
 (provide 'packages)
 

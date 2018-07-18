@@ -141,6 +141,7 @@
   ;; Start debug
   (local-set-key (kbd "<f5>")
                  'sharry/compile-current-file-and-run)
+
   ;; Stop debug
   (local-set-key (kbd "<f8>")
                  (lambda ()
