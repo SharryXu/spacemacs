@@ -108,7 +108,7 @@
 (defun sharry/format-c-c++-code-type-brace ()
   "Format by clang-format when enter '}'."
   (interactive)
-	(c-electric-brace 1)
+  (c-electric-brace 1)
   (let ((end-position (line-end-position))
         (begin-position (scan-lists (- (point) 1) -1 1)))
     (progn
@@ -122,7 +122,7 @@
 (defun sharry/format-c-c++-code-type-semi&comma ()
   "Format by clang-format when enter ';'."
   (interactive)
-	(c-electric-semi&comma 1)
+  (c-electric-semi&comma 1)
   (let ((end-position (line-end-position))
         (begin-position (line-beginning-position)))
     (progn
@@ -148,8 +148,7 @@
                    (interactive)
                    (sharry/kill-buffer-by-name sharry-async-shell-buffer-name)))
 
-	(auto-complete-mode 1)
-
+  (auto-complete-mode 1)
   (setq indent-tabs-mode nil))
 
 (defun sharry/configure-c-mode ()
@@ -261,10 +260,6 @@
   (local-set-key (kbd "<f6>")
                  'hexo-server-stop))
 
-(defun sharry/configure-pdf-view-mode ()
-  "Configure pdf tools."
-  (nlinum-mode -1))
-
 (defun sharry/configure-dired-mode ()
   "Configure dired mode."
   (require 'all-the-icons-dired)
@@ -279,6 +274,24 @@
         (defvar diredful-init-file sharry-default-diredful-config-file-path)
         (diredful-mode 1))
     (message "The diredful file is not existed.")))
+
+(defun sharry/exec-path-initialize ()
+  "Initialize path."
+	(interactive)
+  (message "Add exec path...")
+  ;; It may very slow when add -i argument.
+  ;;(set-variable 'exec-path-from-shell-arguments '("-l"))
+  (set-variable 'exec-path-from-shell-check-startup-files nil)
+  (exec-path-from-shell-initialize)
+	(setq exec-path (remove-duplicates exec-path :test 'string=))
+  (message "Add exec path finished."))
+
+(defun sharry/configure-emacs-lisp-mode ()
+  "Configure the emacs-lisp program mode."
+  (local-set-key (kbd "<f5>")
+								 (lambda ()
+                   (interactive)
+                   (eval-last-sexp 1))))
 
 (provide 'funs)
 
