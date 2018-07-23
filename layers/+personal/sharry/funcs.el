@@ -47,6 +47,8 @@
     (cond
      ((string-match ".*\.html$" file-name)
       (web-beautify-html-buffer))
+		 ((string-match ".*\.go$" file-name)
+			(gofmt))
      ((string-match ".*\.css$" file-name)
       (web-beautify-css-buffer))
      ((string-match ".*\.js$" file-name)
