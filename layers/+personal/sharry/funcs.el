@@ -295,6 +295,11 @@
                    (interactive)
                    (eval-last-sexp 1))))
 
+(defun sharry/configure-go-mode ()
+	"Configure the go mode."
+  (local-set-key (kbd "<f5>")
+                 'spacemacs/go-run-main))
+
 (provide 'funs)
 
 ;;; funcs.el ends here
