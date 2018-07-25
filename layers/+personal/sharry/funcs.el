@@ -47,8 +47,8 @@
     (cond
      ((string-match ".*\.html$" file-name)
       (web-beautify-html-buffer))
-		 ((string-match ".*\.go$" file-name)
-			(gofmt))
+     ((string-match ".*\.go$" file-name)
+      (gofmt))
      ((string-match ".*\.css$" file-name)
       (web-beautify-css-buffer))
      ((string-match ".*\.js$" file-name)
@@ -70,11 +70,11 @@
   (if (null (string-match ".*exited abnormally.*" str))
       (progn
         (run-at-time
-         "0.5 sec" nil 'delete-windows-on
+         "0.3 sec" nil 'delete-windows-on
          (get-buffer-create "*compilation*"))
-        (message "No errors.")))
-  (async-shell-command "./a.out")
-  (select-window (previous-window)))
+        (async-shell-command "./a.out")
+        (select-window (previous-window)))
+    (message "Something wrong.")))
 
 (defun sharry/get-buffer--by-name (buffer-names pattern)
   "Get matched buffer name from BUFFER-NAMES using PATTERN."
@@ -279,24 +279,24 @@
 
 (defun sharry/exec-path-initialize ()
   "Initialize path."
-	(interactive)
+  (interactive)
   (message "Add exec path...")
   ;; It may very slow when add -i argument.
   ;;(set-variable 'exec-path-from-shell-arguments '("-l"))
   (set-variable 'exec-path-from-shell-check-startup-files nil)
   (exec-path-from-shell-initialize)
-	(setq exec-path (remove-duplicates exec-path :test 'string=))
+  (setq exec-path (remove-duplicates exec-path :test 'string=))
   (message "Add exec path finished."))
 
 (defun sharry/configure-emacs-lisp-mode ()
   "Configure the emacs-lisp program mode."
   (local-set-key (kbd "<f5>")
-								 (lambda ()
+                 (lambda ()
                    (interactive)
                    (eval-last-sexp 1))))
 
 (defun sharry/configure-go-mode ()
-	"Configure the go mode."
+  "Configure the go mode."
   (local-set-key (kbd "<f5>")
                  'spacemacs/go-run-main))
 
