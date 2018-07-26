@@ -300,6 +300,12 @@
   (local-set-key (kbd "<f5>")
                  'spacemacs/go-run-main))
 
+(defun sharry/configure-python-mode ()
+	"Configure the python mode."
+
+	(company-mode -1)
+	(auto-complete-mode 1))
+
 (provide 'funs)
 
 ;;; funcs.el ends here
