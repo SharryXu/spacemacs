@@ -54,10 +54,7 @@
      ((string-match ".*\.js$" file-name)
       (web-beautify-js-buffer))
      ((string-match ".*\.c$" file-name)
-      (sharry/clang-format-buffer (point-min)
-                                  (point-max)))
-     ((sharry/format-file-content (point-min)
-                                  (- (point-max) 1)))) ;; Remove the EOF char at the end of the file.
+      (clang-format-buffer (sharry/get-clang-format-config))))
     (message "Formatting `%s'..." file-name)))
 
 (defun sharry/compile-current-file-and-run ()
@@ -299,12 +296,6 @@
   "Configure the go mode."
   (local-set-key (kbd "<f5>")
                  'spacemacs/go-run-main))
-
-(defun sharry/configure-python-mode ()
-	"Configure the python mode."
-
-	(company-mode -1)
-	(auto-complete-mode 1))
 
 (provide 'funs)
 
