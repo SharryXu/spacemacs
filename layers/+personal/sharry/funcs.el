@@ -297,6 +297,24 @@
   (local-set-key (kbd "<f5>")
                  'spacemacs/go-run-main))
 
+(defun sharry/finish-dash-docsets-sync (process event)
+	"Finsh the dash docsets synchronization. Kill the PROCESS and show the EVENT."
+	(cond ((string-match-p "finished" event)
+				 (progn
+					 (kill-buffer "*Sync dash docsets*")
+					 (message "Dash docsets synchronization done.")))))
+
+(defun sharry/sync-dash-docsets ()
+	"Sync dash docsets in mac system."
+	(interactive)
+  (when (and (spacemacs/system-is-mac)
+						 (file-directory-p helm-dash-docset-newpath))
+		(let* ((process (start-process-shell-command
+										"dash-docsets-synchronization"
+										"*Sync dash docsets*"
+									 (concat "sync-docsets " helm-dash-docset-newpath))))
+			(set-process-sentinel process 'sharry/finish-dash-docsets-sync))))
+
 (provide 'funs)
 
 ;;; funcs.el ends here
