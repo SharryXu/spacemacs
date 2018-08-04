@@ -147,7 +147,8 @@
                    (interactive)
                    (sharry/kill-buffer-by-name sharry-async-shell-buffer-name)))
 
-  (auto-complete-mode 1)
+	;; Avoid automatically insert backslashes when type quote character.
+	(setq sp-escape-quotes-after-insert nil)
   (setq indent-tabs-mode nil))
 
 (defun sharry/configure-c-mode ()
