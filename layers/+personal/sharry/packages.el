@@ -26,6 +26,7 @@
     hexo
     evil-multiedit
 		exec-path-from-shell
+		elisp-format
     ))
 
 (defun sharry/init-evil-terminal-cursor-changer ()
@@ -94,6 +95,11 @@
 (defun sharry/init-exec-path-from-shell ()
 	"Init package."
 	(use-package exec-path-from-shell
+		:defer t))
+
+(defun sharry/init-elisp-format ()
+	"Init package."
+	(use-package elisp-format
 		:defer t))
 
 (provide 'packages)

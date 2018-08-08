@@ -3,6 +3,8 @@
 ;;; Commentary:
 
 ;;; Code:
+(defvar sharry-docset-collection '("Go" "C"))
+
 (defvar sharry-async-shell-buffer-name "Async Shell Command")
 
 (defvar sharry-chicken-repl-buffer-name "Chicken REPL")
