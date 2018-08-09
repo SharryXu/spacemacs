@@ -264,6 +264,24 @@
 				 (setq exec-path (remove-duplicates exec-path
 																						:test 'string=))))
 
+(defun sharry/run-python-program ()
+	"Execute python program."
+	(interactive)
+	(async-shell-command (concat "python3 " (buffer-file-name (current-buffer))))
+	(select-window (previous-window)))
+
+(defun sharry/configure-python-mode ()
+	"Configure the python mode."
+	(local-set-key (kbd "<f5>")
+								 (lambda ()
+									 (interactive)
+									 (sharry/run-python-program)))
+
+	(local-set-key (kbd "<f8>")
+								 (lambda ()
+									 (interactive)
+									 (sharry/kill-buffer-by-name sharry-async-shell-buffer-name))))
+
 (provide 'funs)
 
 ;;; funcs.el ends here
