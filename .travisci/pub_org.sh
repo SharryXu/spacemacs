@@ -21,14 +21,15 @@ fold_end() {
 
 cd  ~/.emacs.d
 
-<<<<<<< HEAD
-if  [ "$TRAVIS_BRANCH" = "master" ] || [ "$TRAVIS_BRANCH" = "develop" ]; then
-=======
 if [ "$TRAVIS_BRANCH" = "develop" ]; then
->>>>>>> author/develop
     PUBLISH="spacemacs"
 else
     echo "branch is \"${TRAVIS_BRANCH}\". Won't publish."
+    exit 0
+fi
+
+if [ `git rev-list HEAD...origin/$TRAVIS_BRANCH --count` != 0 ]; then
+    echo "We are outdated. Won't publish."
     exit 0
 fi
 
@@ -55,22 +56,17 @@ rsync -rv \
       --prune-empty-dirs \
       ~/.emacs.d/ \
       "/tmp/${PUBLISH}"
-git add --all
-git diff --cached --exit-code
-if [ $? -eq 0 ]; then
+cd "/tmp/${PUBLISH}"
+/tmp/hub add --all
+/tmp/hub commit -m "documentation formatting: $(date -u)"
+if [ $? -ne 0 ]; then
     echo "Nothing to commit - exiting."
     exit 0
 fi
 fold_end "SELECTING_CHANGED_FILES"
 
 fold_start "PUSHING_CHANGES_TO_${BOT_NAME}/${PUBLISH}"
-cd "/tmp/${PUBLISH}"
-/tmp/hub add --all
-<<<<<<< HEAD
-/tmp/hub commit -m "documentation fixes:$(date -u)"
-=======
 /tmp/hub commit -m "documentation fixes: $(date -u)"
->>>>>>> author/develop
 if [ $? -ne 0 ]; then
     echo "hub commit failed"
     exit 2
@@ -93,7 +89,7 @@ fi
 fold_end "PUSHING_CHANGES_TO_${BOT_NAME}/${PUBLISH}"
 
 fold_start "OPENING_PR_TO_syl20bnr/${PUBLISH}.git"
-echo "[Spacebot]Documentation fixes" > msg
+echo "[bot] Documentation formatting" > msg
 echo >> msg
 echo "Merge with care - I'm just a stupid bot. Beep boop." >> msg
 /tmp/hub pull-request -b "${TRAVIS_BRANCH}" -F msg
