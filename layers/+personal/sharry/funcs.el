@@ -139,12 +139,13 @@
 	"Configure C mode."
 	(sharry/configure-common-c-c++-mode)
 	(c-toggle-auto-newline -1)
-	(c-set-style "sharry")
 	(defvar c-c++-default-mode-for-headers 'c-mode)
 	(defvar c-c++-enable-c++11 nil)
 	(defvar flycheck-clang-language-standard "gnu99")
 	(defvar flycheck-gcc-language-standard "gnu99")
-	(defvar flycheck-cppcheck-standards "gun99"))
+	(defvar flycheck-cppcheck-standards "gun99")
+	(c-add-style "sharry" sharry-code-style-for-c)
+	(c-set-style "sharry"))
 
 (defun sharry/configure-c++-mode ()
 	"Configure C++ mode."
@@ -276,7 +277,6 @@
 								 (lambda ()
 									 (interactive)
 									 (sharry/run-python-program)))
-
 	(local-set-key (kbd "<f8>")
 								 (lambda ()
 									 (interactive)
