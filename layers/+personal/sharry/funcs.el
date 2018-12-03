@@ -246,6 +246,12 @@
 
 (defun sharry/configure-go-mode ()
 	"Configure the go mode."
+	(setq go-format-before-save t)
+	(setq go-tab-width 4)
+	(setq godoc-at-point-function 'godoc-gogetdoc)
+	(setq go-backend 'lsp)
+	(setq go-use-gometalinter t)
+
 	(local-set-key (kbd "<f5>") 'spacemacs/go-run-main))
 
 (defun sharry/async-install-dash-docsets ()
