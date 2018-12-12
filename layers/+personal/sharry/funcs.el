@@ -252,6 +252,8 @@
 	(setq go-backend 'lsp)
 	(setq go-use-gometalinter t)
 
+	(exec-path-from-shell-copy-env "GOPATH")
+
 	(local-set-key (kbd "<f5>") 'spacemacs/go-run-main))
 
 (defun sharry/async-install-dash-docsets ()
