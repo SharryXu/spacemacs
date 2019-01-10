@@ -47,6 +47,8 @@
 					 (web-beautify-css-buffer))
 					((string-match ".*\.js$" file-name)
 					 (web-beautify-js-buffer))
+					((string-match ".*\.json$" file-name)
+					 (json-mode-beautify))
 					((string-match ".*\.el$" file-name)
 					 (elisp-format-buffer)
 					 (delete-trailing-whitespace))
