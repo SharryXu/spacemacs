@@ -1012,7 +1012,7 @@ Some dynamic environment variables are ignored by Spacemacs when it first
 creates the =~/.spacemacs.env= file. These ignored variables are listed in
 the variable =spacemacs-ignored-environment-variables=.
 
-It is possible to for a new import of system and shell environment variables
+It is possible to force a new import of system and shell environment variables
 with ~SPC f e C-e~. Note that this action will overwrite =~/.spacemacs.env=.
 
 ** Managing environment variables by yourself
@@ -2159,8 +2159,9 @@ Windows manipulation commands (start with ~w~):
 | ~SPC w _~              | maximize window horizontally                                                |
 | ~SPC w \vert~          | maximize window vertically                                                  |
 | ~SPC w b~              | force the focus back to the minibuffer                                      |
-| ~SPC w c~              | maximize/minimize a window and center it                                    |
-| ~SPC w C~              | maximize/minimize a window and center it using [[https://github.com/abo-abo/ace-window][ace-window]]                   |
+| ~SPC w c c~            | toggle visual centering of the current buffer                               |
+| ~SPC w c C~            | toggle visual distraction free mode                                         |
+| ~SPC w c .~            | center buffer and enable centering transient state                          |
 | ~SPC w d~              | delete a window                                                             |
 | ~SPC u SPC w d~        | delete a window and its current buffer (does not delete the file)           |
 | ~SPC w D~              | delete another window using [[https://github.com/abo-abo/ace-window][ace-window]]                                      |
