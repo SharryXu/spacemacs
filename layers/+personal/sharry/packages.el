@@ -27,6 +27,7 @@
     evil-multiedit
 		exec-path-from-shell
 		elisp-format
+		vue-mode
     ))
 
 (defun sharry/init-evil-terminal-cursor-changer ()
@@ -100,6 +101,11 @@
 (defun sharry/init-elisp-format ()
 	"Init package."
 	(use-package elisp-format
+		:defer t))
+
+(defun sharry/init-vue-mode ()
+	"Init package."
+	(use-package vue-mode
 		:defer t))
 
 (provide 'packages)
