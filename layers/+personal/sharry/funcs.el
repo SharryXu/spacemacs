@@ -59,7 +59,7 @@
 (defun sharry/compile-current-file-and-run ()
 	"Compile selected file and run."
 	(interactive)
-	(compile (format "clang %s" (buffer-name))))
+	(compile (format "gcc %s" (buffer-name))))
 
 (defun sharry/close-compilation-window-if-no-errors (str)
 	"Close compilation window if the result STR contain no error messages."
