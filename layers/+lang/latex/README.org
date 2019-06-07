@@ -1,11 +1,13 @@
 #+TITLE: LaTeX layer
 
+#+TAGS: dsl|layer|markup|programming
+
 [[file:img/latex.png]]
 
-* Table of Contents                     :TOC_4_gh:noexport:
+* Table of Contents                     :TOC_5_gh:noexport:
 - [[#description][Description]]
   - [[#features][Features:]]
-  - [[#bibtex][BibTeX]]
+- [[#bibtex][BibTeX]]
 - [[#install][Install]]
   - [[#layer][Layer]]
   - [[#auto-completion][Auto-completion]]
@@ -27,7 +29,7 @@ This layer adds support for LaTeX files with [[https://savannah.gnu.org/projects
 - Tags navigation on ~%~ with [[https://github.com/redguardtoo/evil-matchit][evil-matchit]]
 - Labels, references, citations and index entries management with [[http://www.gnu.org/software/emacs/manual/html_node/reftex/index.html][RefTeX]]
 
-** BibTeX
+* BibTeX
 For more extensive support of BibTeX files than RefTeX provides, have a look at
 the [[https://github.com/syl20bnr/spacemacs/blob/develop/layers/%2Blang/bibtex/README.org][BibTeX layer]].
 
@@ -88,7 +90,7 @@ is nil.
 #+END_SRC
 
 ** Magic latex buffer
-To enable “magic” symbols in latex buffers, set the variable
+To enable "magic" symbols in latex buffers, set the variable
 =latex-enable-magic= to =t=.
 
 #+BEGIN_SRC emacs-lisp

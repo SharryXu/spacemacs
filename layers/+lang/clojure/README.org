@@ -1,8 +1,10 @@
 #+TITLE: Clojure layer
 
+#+TAGS: dsl|layer|lisp|programming
+
 [[file:img/clojure.png]] [[file:img/cider.png]]
 
-* Table of Contents                     :TOC_4_gh:noexport:
+* Table of Contents                     :TOC_5_gh:noexport:
 - [[#description][Description]]
   - [[#features][Features:]]
 - [[#install][Install]]
@@ -15,6 +17,7 @@
     - [[#more-details][More details]]
 - [[#usage][Usage]]
   - [[#cheatsheet][Cheatsheet]]
+  - [[#linting][Linting]]
   - [[#structuraly-safe-editing][Structuraly safe editing]]
 - [[#key-bindings][Key bindings]]
   - [[#working-with-clojure-files-barfage-slurpage--more][Working with clojure files (barfage, slurpage & more)]]
@@ -48,6 +51,7 @@ This layer adds support for [[https://clojure.org/][Clojure]] language using [[h
 - REPL via [[https://github.com/clojure-emacs/cider][CIDER]]
 - Code formatting via [[https://github.com/clojure-emacs/cider][CIDER]] using [[https://github.com/weavejester/cljfmt][Cljfmt]]
 - Refactoring via [[https://github.com/clojure-emacs/clj-refactor.el][clj-refactor]]
+- Linting via [[https://github.com/clojure-emacs/squiggly-clojure][squiggly-clojure]]
 - Aligning of code forms via [[https://github.com/clojure-emacs/clojure-mode][clojure-mode]]
 - Debugging with [[https://github.com/clojure-emacs/sayid][sayid]]
 - Clojure cheatsheet
@@ -120,7 +124,7 @@ sure the necessary dependencies are present, and the necessary nREPL middlewares
 are enabled.
 
 *** Quick Start with boot
-- Install =boot= (see [[https://github.com/boot-clj/boot#user-content-install]])
+- Install =boot= 2.8.2 or newer (see [[https://github.com/boot-clj/boot#user-content-install]])
 - Create a file =~/.boot/profile.boot= with the following content:
 
   #+BEGIN_SRC clojure
@@ -130,7 +134,7 @@ are enabled.
            ;; When running an older version of CIDER (pre 0.18), use the
            ;; version that best matches M-x cider-version. For versions since
            ;; 0.18.0 use whatever version is the most recent.
-           '[cider/cider-nrepl "0.19.0-SNAPSHOT"]
+           '[cider/cider-nrepl "0.21.1"]
 
            ;; Only necessary when using clj-refactor
            '[refactor-nrepl "2.4.0"]
@@ -145,7 +149,7 @@ are enabled.
   #+END_SRC
 
 *** Quick Start with lein
-- Install =lein= version 2.5.2 or newer (see [[https://leiningen.org/#install]])
+- Install =lein= version 2.9.0 or newer (see [[https://leiningen.org/#install]])
 - Create a file =~/.lein/profiles.clj= with the following content:
 
   #+BEGIN_SRC clojure
@@ -153,7 +157,7 @@ are enabled.
      {:plugins [;; When running an older version of CIDER (pre 0.18), use the
                 ;; version that best matches M-x cider-version. For versions since
                 ;; 0.18.0 use whatever version is the most recent.
-                [cider/cider-nrepl "0.19.0-SNAPSHOT"]
+                [cider/cider-nrepl "0.21.1"]
 
                 ;; Only necessary when using clj-refactor
                 [refactor-nrepl "2.4.0"]
@@ -184,6 +188,18 @@ Type ~SPC m h c~ to display the cheatsheet then type in some terms (space
 separated) to narrow down the list. For example, try typing in sort map to see
 some functions that deal with sorting maps.
 
+** Linting
+Linting works via flycheck and disabled by default.
+You can enable it like this:
+
+#+BEGIN_SRC emacs-lisp
+  (setq clojure-enable-linters t)
+#+END_SRC
+
+Make sure to read the [[https://github.com/clojure-emacs/squiggly-clojure#warnings][warnings section]].
+If you have a problem peek into [[https://github.com/clojure-emacs/squiggly-clojure#debugging-and-bug-reporting][debugging and bug reporting]] then try to reproduce in the [[https://github.com/clojure-emacs/squiggly-clojure/tree/master/sample-project][sample project]].
+NOTE: With the default linter configs you should add =org.clojure/core.typed= to the development dependencies.
+
 ** Structuraly safe editing
 This layer adds support for =evil-cleverparens= which allows to safely edit
 lisp code by keeping the s-expressions balanced.
@@ -209,7 +225,7 @@ When enabled the symbol =🆂= should be displayed in the mode-line.
 * Key bindings
 ** Working with clojure files (barfage, slurpage & more)
 Spacemacs comes with a special =lisp-state= for working with lisp code that
-supports slurpage, barfage and more tools you’ll likely want when working with
+supports slurpage, barfage and more tools you'll likely want when working with
 lisp.
 
 As this state works the same for all files, the documentation is in global
@@ -241,6 +257,7 @@ As this state works the same for all files, the documentation is in global
 | ~SPC m e M~ | cider macroexpand all                                     |
 | ~SPC m e p~ | print last sexp (clojure interaction mode only)           |
 | ~SPC m e P~ | eval last sexp and pretty print result in separate buffer |
+| ~SPC m e u~ | Undefine a symbol from the current namespace              |
 | ~SPC m e w~ | eval last sexp and replace with result                    |
 
 *** Goto
@@ -314,7 +331,7 @@ As this state works the same for all files, the documentation is in global
 | ~SPC m d r~   | reload namespaces                                  |
 | ~SPC m d s~   | show what is currently traced                      |
 | ~SPC m d S~   | show what is currently traced in current namespace |
-| ~SPC m d t b~ | trace current file’s namespace                     |
+| ~SPC m d t b~ | trace current file's namespace                     |
 | ~SPC m d t d~ | disable existing trace on current function         |
 | ~SPC m d t D~ | disable existing trace on all functions            |
 | ~SPC m d t e~ | enable existing trace on current function          |
@@ -514,6 +531,6 @@ In general, ~q~ should always quit the popped up buffer.
 * Development Notes
 ** Indentation
 With a [[https://github.com/clojure-emacs/cider/blob/master/doc/indent_spec.md][new]] functionality of Cider to read the custom indentation rules from the
-var’s metadata, it is better for consistency reasons to not add the custom
+var's metadata, it is better for consistency reasons to not add the custom
 indentation rules to Spacemacs, but to add them to the metadata of those
 specific vars.

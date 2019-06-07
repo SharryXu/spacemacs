@@ -19,6 +19,8 @@
         company
         eldoc
         evil-cleverparens
+        flycheck
+        (flycheck-clojure :toggle clojure-enable-linters)
         ggtags
         counsel-gtags
         helm-gtags
@@ -42,17 +44,13 @@
             cider-repl-use-clojure-font-lock t
             cider-repl-history-file (concat spacemacs-cache-directory "cider-repl-history"))
       (add-hook 'clojure-mode-hook 'cider-mode)
+
       (dolist (x '(spacemacs-jump-handlers-clojure-mode
                    spacemacs-jump-handlers-clojurec-mode
                    spacemacs-jump-handlers-clojurescript-mode
                    spacemacs-jump-handlers-clojurex-mode
                    spacemacs-jump-handlers-cider-repl-mode))
-        (add-to-list x 'spacemacs/clj-find-var))
-
-      (add-hook 'clojure-mode-hook #'spacemacs//init-jump-handlers-clojure-mode)
-      (add-hook 'clojurescript-mode-hook #'spacemacs//init-jump-handlers-clojurescript-mode)
-      (add-hook 'clojurec-mode-hook #'spacemacs//init-jump-handlers-clojurec-mode)
-      (add-hook 'cider-repl-mode-hook #'spacemacs//init-jump-handlers-cider-repl-mode)
+        (add-to-list x '(spacemacs/clj-find-var :async t)))
 
       ;; TODO: having this work for cider-macroexpansion-mode would be nice,
       ;;       but the problem is that it uses clojure-mode as its major-mode
@@ -89,6 +87,7 @@
             "eM" 'cider-macroexpand-all
             "eP" 'cider-pprint-eval-last-sexp
             "er" 'cider-eval-region
+            "eu" 'cider-undef
             "ew" 'cider-eval-last-sexp-and-replace
 
             "="  'cider-format-buffer
@@ -165,6 +164,9 @@
       ;; add support for golden-ratio
       (with-eval-after-load 'golden-ratio
         (add-to-list 'golden-ratio-extra-commands 'cider-popup-buffer-quit-function))
+      ;; setup linters. NOTE: It must be done after both CIDER and Flycheck are loaded.
+      (when clojure-enable-linters
+        (with-eval-after-load 'flycheck (flycheck-clojure-setup)))
       ;; add support for evil
       (evil-set-initial-state 'cider-stacktrace-mode 'motion)
       (evil-set-initial-state 'cider-popup-buffer-mode 'motion)
@@ -414,5 +416,12 @@
         (kbd "h") 'sayid-traced-buf-show-help))))
 
 (defun clojure/post-init-parinfer ()
+  (add-hook 'clojure-mode-hook 'parinfer-mode))
+
+(defun clojure/post-init-flycheck ()
   (spacemacs|forall-clojure-modes m
-    (add-hook m 'parinfer-mode)))
+    (spacemacs/enable-flycheck m)))
+
+(defun clojure/init-flycheck-clojure ()
+  (use-package flycheck-clojure
+    :if (configuration-layer/package-usedp 'flycheck)))

@@ -1,6 +1,8 @@
 #+TITLE: IBuffer layer
 
-* Table of Contents                     :TOC_4_gh:noexport:
+#+TAGS: emacs|layer
+
+* Table of Contents                     :TOC_5_gh:noexport:
 - [[#description][Description]]
   - [[#features][Features:]]
 - [[#install][Install]]
@@ -49,8 +51,8 @@ Example:
 
 ** IBuffer
 
-| Key binding | Description                   |
-|-------------+-------------------------------|
-| ~g r~       | update IBuffer (“refresh”)    |
-| ~g j~       | move to next filter group     |
-| ~g k~       | move to previous filter group |
+| Key binding                   | Description                   |
+|-------------------------------+-------------------------------|
+| ~g r~                         | update IBuffer ("refresh")    |
+| ~g j~ / ~]~ / ~TAB~ / ~M-n~   | move to next filter group     |
+| ~g k~ / ~[~ / ~S-TAB~ / ~M-p~ | move to previous filter group |

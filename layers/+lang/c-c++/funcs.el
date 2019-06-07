@@ -139,6 +139,22 @@ and the arguments for flyckeck-clang based on a project-specific text file."
                           idirafter-paths)))))
 
 
+;; cpp-auto-include
+
+(defalias 'spacemacs/c++-organize-includes 'cpp-auto-include)
+
+(defun spacemacs//c++-organize-includes-on-save ()
+  "Organize the includes on save when `c++-enable-organize-includes-on-save'
+is non-nil."
+  (when c++-enable-organize-includes-on-save
+    (spacemacs/c++-organize-includes)))
+
+(defun spacemacs/c++-organize-includes-on-save ()
+  "Add before-save hook for c++-organize-includes."
+  (add-hook 'before-save-hook
+            #'spacemacs//c++-organize-includes-on-save nil t))
+
+
 ;; rtags
 
 (defun spacemacs/c-c++-use-rtags (&optional useFileManager)
@@ -228,7 +244,6 @@ and the arguments for flyckeck-clang based on a project-specific text file."
 (defun spacemacs//c-c++-lsp-config ()
   "Configure the LSP backend specified by the `c-c++-backend' configuration variable."
     (progn
-      (remhash 'clangd lsp-clients)
       (spacemacs//c-c++-lsp-define-extensions)
       (spacemacs//c-c++-lsp-wrap-functions)
       (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-gcc))
@@ -249,8 +264,8 @@ and the arguments for flyckeck-clang based on a project-specific text file."
               '(:cacheFormat "msgpack"))))
         ('lsp-ccls (setq ccls-initialization-options
                      (if c-c++-lsp-initialization-options
-                       (append c-c++-lsp-initialization-options `(:cacheDirectory ,c-c++-lsp-cache-dir))
-                       `(:cacheDirectory ,c-c++-lsp-cache-dir)))))
+                       (append c-c++-lsp-initialization-options `(:cache (:directory ,c-c++-lsp-cache-dir)))
+                       `(:cache (:directory ,c-c++-lsp-cache-dir ))))))
 
       (when c-c++-lsp-sem-highlight-rainbow
         (unless c-c++-lsp-sem-highlight-method
@@ -266,7 +281,14 @@ and the arguments for flyckeck-clang based on a project-specific text file."
 
       (evil-set-initial-state '(spacemacs//c-c++-lsp-symbol nil "-tree-mode") 'emacs)
       ;;evil-record-macro keybinding clobbers q in cquery-tree-mode-map for some reason?
-      (evil-make-overriding-map (symbol-value (spacemacs//c-c++-lsp-symbol nil "-tree-mode-map")))))
+      (evil-make-overriding-map (symbol-value (spacemacs//c-c++-lsp-symbol nil "-tree-mode-map")))
+
+      (if (configuration-layer/layer-used-p 'dap)
+          (progn
+            (require 'dap-gdb-lldb)
+            (dolist (mode c-c++-modes)
+              (spacemacs/dap-bind-keys-for-mode mode)))
+        (message "`dap' layer is not installed, please add `dap' layer to your dotfile."))))
 
 (defun spacemacs//c-c++-lsp-wrap-functions ()
   "Wrap navigation functions for the LSP backend specified by the `c-c++-backend' configuration variable."

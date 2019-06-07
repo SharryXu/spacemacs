@@ -18,16 +18,15 @@
 
 (defun spacemacs//python-setup-company ()
   "Conditionally setup company based on backend."
-  (pcase python-backend
-    (`anaconda (spacemacs//python-setup-anaconda-company))
-    (`lsp (spacemacs//python-setup-lsp-company))))
+  (if (eq python-backend `anaconda)
+    (spacemacs//python-setup-anaconda-company)
+    (spacemacs//python-setup-lsp-company)))
 
 (defun spacemacs//python-setup-eldoc ()
   "Conditionally setup eldoc based on backend."
   (pcase python-backend
     ;; lsp setup eldoc on its own
-    (`anaconda (spacemacs//python-setup-anaconda-eldoc))))
-
+    (spacemacs//python-setup-anaconda-eldoc)))
 
 ;; anaconda
 
@@ -56,12 +55,6 @@
   (forward-button 1)
   (call-interactively #'push-button))
 
-(defun spacemacs//disable-semantic-idle-summary-mode ()
-  "Disable semantic-idle-summary in Python mode.
-Anaconda provides more useful information but can not do it properly
-when this mode is enabled since the minibuffer is cleared all the time."
-  (semantic-idle-summary-mode 0))
-
 
 ;; lsp
 
@@ -69,7 +62,13 @@ when this mode is enabled since the minibuffer is cleared all the time."
   "Setup lsp backend."
   (if (configuration-layer/layer-used-p 'lsp)
       (lsp)
-    (message "`lsp' layer is not installed, please add `lsp' layer to your dotfile.")))
+    (message "`lsp' layer is not installed, please add `lsp' layer to your dotfile."))
+  (if (configuration-layer/layer-used-p 'dap)
+    (progn
+      (require 'dap-python)
+      (spacemacs/set-leader-keys-for-major-mode 'python-mode "db" nil)
+      (spacemacs/dap-bind-keys-for-mode 'python-mode))
+    (message "`dap' layer is not installed, please add `dap' layer to your dotfile.")))
 
 (defun spacemacs//python-setup-lsp-company ()
   "Setup lsp auto-completion."
@@ -89,8 +88,8 @@ when this mode is enabled since the minibuffer is cleared all the time."
 (defun spacemacs//python-default ()
   "Defaut settings for python buffers"
   (setq mode-name "Python"
-        tab-width python-tab-width
-        fill-column python-fill-column)
+    tab-width python-tab-width
+    fill-column python-fill-column)
 
   ;; since we changed the tab-width we need to manually call python-indent-guess-indent-offset here
   (when python-spacemacs-indent-guess
@@ -187,10 +186,10 @@ as the pyenv version then also return nil. This works around https://github.com/
   "autoflake --remove-all-unused-imports -i unused_imports.py"
   (interactive)
   (if (executable-find "autoflake")
-      (progn
-        (shell-command (format "autoflake --remove-all-unused-imports -i %s"
-                               (shell-quote-argument (buffer-file-name))))
-        (revert-buffer t t t))
+    (progn
+      (shell-command (format "autoflake --remove-all-unused-imports -i %s"
+                       (shell-quote-argument (buffer-file-name))))
+      (revert-buffer t t t))
     (message "Error: Cannot find autoflake executable.")))
 
 (defun spacemacs//pyenv-mode-set-local-version ()
@@ -346,6 +345,20 @@ to be called for each testrunner. "
     (py-isort-before-save)))
 
 
+;; Formatters
+
+(defun spacemacs//bind-python-formatter-keys ()
+  (spacemacs/set-leader-keys-for-major-mode 'python-mode
+    "=" 'spacemacs/python-format-buffer))
+
+(defun spacemacs/python-format-buffer ()
+  (interactive)
+  (pcase python-formatter
+    (`yapf (yapfify-buffer))
+    (`black (blacken-buffer))
+    (code (message "Unknown formatter: %S" code))))
+
+
 ;; REPL
 
 (defun spacemacs//inferior-python-setup-hook ()
@@ -355,23 +368,44 @@ to be called for each testrunner. "
 (defun spacemacs/python-shell-send-buffer-switch ()
   "Send buffer content to shell and switch to it in insert mode."
   (interactive)
-  (python-shell-send-buffer)
-  (python-shell-switch-to-shell)
-  (evil-insert-state))
+  (let ((python-mode-hook nil))
+    (python-shell-send-buffer)
+    (python-shell-switch-to-shell)
+    (evil-insert-state)))
+
+(defun spacemacs/python-shell-send-buffer ()
+  "Send buffer content to shell and switch to it in insert mode."
+  (interactive)
+  (let ((python-mode-hook nil))
+    (python-shell-send-buffer)))
 
 (defun spacemacs/python-shell-send-defun-switch ()
   "Send function content to shell and switch to it in insert mode."
   (interactive)
-  (python-shell-send-defun nil)
-  (python-shell-switch-to-shell)
-  (evil-insert-state))
+  (let ((python-mode-hook nil))
+    (python-shell-send-defun nil)
+    (python-shell-switch-to-shell)
+    (evil-insert-state)))
+
+(defun spacemacs/python-shell-send-defun ()
+  "Send function content to shell and switch to it in insert mode."
+  (interactive)
+  (let ((python-mode-hook nil))
+    (python-shell-send-defun nil)))
 
 (defun spacemacs/python-shell-send-region-switch (start end)
   "Send region content to shell and switch to it in insert mode."
   (interactive "r")
-  (python-shell-send-region start end)
-  (python-shell-switch-to-shell)
-  (evil-insert-state))
+  (let ((python-mode-hook nil))
+    (python-shell-send-region start end)
+    (python-shell-switch-to-shell)
+    (evil-insert-state)))
+
+(defun spacemacs/python-shell-send-region (start end)
+  "Send region content to shell and switch to it in insert mode."
+  (interactive "r")
+  (let ((python-mode-hook nil))
+    (python-shell-send-region start end)))
 
 (defun spacemacs/python-start-or-switch-repl ()
   "Start and/or switch to the REPL."

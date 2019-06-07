@@ -100,20 +100,20 @@
         "sgF" 'spacemacs/search-grep-region-or-symbol
         "sgp" 'counsel-git-grep
         "sgP" 'spacemacs/counsel-git-grep-region-or-symbol
-        "skd" 'spacemacs/search-ack-grep
-        "skD" 'spacemacs/search-ack-grep-region-or-symbol
+        "skd" 'spacemacs/search-dir-ack
+        "skD" 'spacemacs/search-dir-ack-region-or-symbol
         "skf" 'spacemacs/search-ack
         "skF" 'spacemacs/search-ack-region-or-symbol
         "skp" 'spacemacs/search-project-ack
         "skP" 'spacemacs/search-project-ack-region-or-symbol
-        "srd" 'spacemacs/search-rg-grep
-        "srD" 'spacemacs/search-rg-grep-region-or-symbol
+        "srd" 'spacemacs/search-dir-rg
+        "srD" 'spacemacs/search-dir-rg-region-or-symbol
         "srf" 'spacemacs/search-rg
         "srF" 'spacemacs/search-rg-region-or-symbol
         "srp" 'spacemacs/search-project-rg
         "srP" 'spacemacs/search-project-rg-region-or-symbol
-        "std" 'spacemacs/search-pt-grep
-        "stD" 'spacemacs/search-pt-grep-region-or-symbol
+        "std" 'spacemacs/search-dir-pt
+        "stD" 'spacemacs/search-dir-pt-region-or-symbol
         "stf" 'spacemacs/search-pt
         "stF" 'spacemacs/search-pt-region-or-symbol
         "stp" 'spacemacs/search-project-pt
@@ -209,6 +209,10 @@
       (define-key ivy-minibuffer-map [escape] 'minibuffer-keyboard-quit)
       (define-key ivy-minibuffer-map (kbd "M-SPC") 'hydra-ivy/body)
 
+      (when ivy-ret-visits-directory
+        (define-key ivy-minibuffer-map (kbd "RET") #'ivy-alt-done)
+        (define-key ivy-minibuffer-map (kbd "C-j") #'ivy-done))
+
       (ivy-mode 1)
       (global-set-key (kbd "C-c C-r") 'ivy-resume)
       (global-set-key (kbd "<f6>") 'ivy-resume)
@@ -300,7 +304,10 @@
   (ivy-set-actions
    'spacemacs/ivy-spacemacs-layouts
    '(("c" persp-kill-without-buffers "Close layout(s)")
-     ("k" persp-kill  "Kill layout(s)")))
+     ("k" persp-kill  "Kill layout(s)")
+     ("n" persp-copy "Copy Current Layout")
+     ("p" spacemacs//create-persp-with-current-project-buffers
+      "Create Project Layout")))
   ;; TODO: better handling of C and X bindings for ivy
   ;;       check ivy/pre-init-persp-mode
   (spacemacs/transient-state-register-remove-bindings 'layouts

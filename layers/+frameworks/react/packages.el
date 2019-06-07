@@ -16,6 +16,7 @@
     emmet-mode
     evil-matchit
     flycheck
+    import-js
     js-doc
     prettier-js
     rjsx-mode
@@ -35,17 +36,17 @@
   (add-hook 'rjsx-mode-hook 'spacemacs/react-emmet-mode))
 
 (defun react/post-init-evil-matchit ()
-  (with-eval-after-load 'evil-matchit
-    (plist-put evilmi-plugins 'rjsx-mode
-               '((evilmi-simple-get-tag evilmi-simple-jump)
-                 (evilmi-javascript-get-tag evilmi-javascript-jump)
-                 (evilmi-html-get-tag evilmi-html-jump)))))
+  (add-hook 'rjsx-mode-hook 'turn-on-evil-matchit-mode))
 
 (defun react/post-init-flycheck ()
   (with-eval-after-load 'flycheck
     (dolist (checker '(javascript-eslint javascript-standard))
       (flycheck-add-mode checker 'rjsx-mode)))
   (spacemacs/enable-flycheck 'rjsx-mode))
+
+(defun react/pre-init-import-js ()
+  (when (eq javascript-import-tool 'import-js)
+    (add-to-list 'spacemacs--import-js-modes (cons 'rjsx-mode 'rjsx-mode-hook))))
 
 (defun react/post-init-js-doc ()
   (add-hook 'rjsx-mode-hook 'spacemacs/js-doc-require)
@@ -77,14 +78,14 @@
     (spacemacs/declare-prefix-for-mode 'rjsx-mode "mh" "documentation")
     (spacemacs/declare-prefix-for-mode 'rjsx-mode "mg" "goto")
 
-    (spacemacs/set-leader-keys-for-major-mode 'rjsx-mode "rrt" 'rjsx-rename-tag-at-point)
+    (spacemacs/set-leader-keys-for-major-mode 'rjsx-mode "rt" 'rjsx-rename-tag-at-point)
 
     (with-eval-after-load 'rjsx-mode
       (define-key rjsx-mode-map (kbd "C-d") nil))))
 
 (defun react/pre-init-prettier-js ()
-  (if (eq javascript-fmt-tool 'prettier)
-      (add-to-list 'spacemacs--prettier-modes 'rjsx-mode)))
+  (when (eq javascript-fmt-tool 'prettier)
+    (add-to-list 'spacemacs--prettier-modes 'rjsx-mode)))
 
 (defun react/post-init-smartparens ()
   (if dotspacemacs-smartparens-strict-mode
@@ -95,9 +96,9 @@
   (add-to-list 'tern--key-bindings-modes 'rjsx-mode))
 
 (defun react/pre-init-web-beautify ()
-  (if (eq javascript-fmt-tool 'web-beautify)
-      (add-to-list 'spacemacs--web-beautify-modes
-                   (cons 'rjsx-mode 'web-beautify-js))))
+  (when (eq javascript-fmt-tool 'web-beautify)
+    (add-to-list 'spacemacs--web-beautify-modes
+                 (cons 'rjsx-mode 'web-beautify-js))))
 
 (defun react/post-init-yasnippet ()
   (add-hook 'rjsx-mode-hook #'spacemacs//react-setup-yasnippet))

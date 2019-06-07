@@ -26,6 +26,7 @@
                                        ("bN"  "new empty buffer")
                                        ("c"   "compile/comments")
                                        ("C"   "capture/colors")
+                                       ("d"   "documentation")
                                        ("e"   "errors")
                                        ("f"   "files")
                                        ("fC"  "files/convert")
@@ -50,6 +51,7 @@
                                        ("m"   "major mode commands")
                                        ("n"   "narrow/numbers")
                                        ("N"   "navigation")
+                                       ("o"   "user bindings")
                                        ("p"   "projects")
                                        ("q"   "quit")
                                        ("r"   "registers/rings/resume")
@@ -95,6 +97,8 @@
 
 ;; improve delete-other-windows
 (define-key global-map (kbd "C-x 1") 'spacemacs/toggle-maximize-buffer)
+;; adds two spacing modes while preserving just-one-space behaviour
+(define-key global-map (kbd "M-SPC") 'cycle-spacing)
 
 ;; alternate binding to search next occurrence with isearch without
 ;; exiting isearch
@@ -128,6 +132,8 @@
     'universal-argument-more))
 ;; shell command  -------------------------------------------------------------
 (spacemacs/set-leader-keys "!" 'shell-command)
+;; last change  ---------------------------------------------------------------
+(spacemacs/set-leader-keys "," 'goto-last-change)
 ;; applications ---------------------------------------------------------------
 (spacemacs/set-leader-keys
   "ac"  'calc-dispatch
@@ -283,6 +289,7 @@
 ;; format ---------------------------------------------------------------------
 (spacemacs/set-leader-keys
   "jo" 'open-line
+  "jC" 'check-parens
   "j=" 'spacemacs/indent-region-or-buffer
   "jS" 'spacemacs/split-and-new-line
   "jk" 'spacemacs/evil-goto-next-line-and-indent)
@@ -391,7 +398,7 @@
 
 This is achieved by the built in functionality available in emacs 26 by changing
 the value of the `column-number-indicator-zero-based' variable. Functionality
-that does not take into acount `column-number-indicator-zero-based' will not
+that does not take into account `column-number-indicator-zero-based' will not
 respond to this toggle."
   :status (bound-and-true-p column-number-indicator-zero-based)
   :on (setq column-number-indicator-zero-based t)
@@ -526,7 +533,7 @@ respond to this toggle."
   "xar" 'spacemacs/align-repeat
   "xa|" 'spacemacs/align-repeat-bar
   "xc"  'count-region
-  "xd SPC" 'just-one-space
+  "xd SPC" 'cycle-spacing
   "xdw" 'delete-trailing-whitespace
   "xjc" 'set-justification-center
   "xjf" 'set-justification-full
@@ -641,22 +648,46 @@ respond to this toggle."
   (interactive "p")
   (enlarge-window delta t))
 
+(defun spacemacs//window-manipulation-ts-toggle-hint ()
+  "Toggle the full hint docstring for the window manipulation transient-state."
+  (interactive)
+  (setq spacemacs--ts-full-hint-toggle
+        (logxor spacemacs--ts-full-hint-toggle 1)))
+
+(defun spacemacs//window-manipulation-ts-hint ()
+  "Return a condensed/full hint for the window manipulation transient state"
+  (concat
+   " "
+   (if (equal 1 spacemacs--ts-full-hint-toggle)
+       spacemacs--window-manipulation-ts-full-hint
+     (concat spacemacs--window-manipulation-ts-minified-hint
+             "  ([" (propertize "?" 'face 'hydra-face-red) "] help)"))))
+
+(spacemacs|transient-state-format-hint window-manipulation
+  spacemacs--window-manipulation-ts-minified-hint "
+Select: _w_ _h_ _j_ _k_ _l_ _0_.._9_ Move: _H_ _J_ _K_ _L_ _r_ _R_ Split: _s_ _v_ Resize: _[_ _]_ _{_ _}_ _m_ _|_ ___")
+
+(spacemacs|transient-state-format-hint window-manipulation
+  spacemacs--window-manipulation-ts-full-hint
+  (format "\n [_?_] toggle help
+ Select^^^^               Move^^^^              Split^^^^^^               Resize^^             Other^^
+ ──────^^^^─────────────  ────^^^^────────────  ─────^^^^^^─────────────  ──────^^───────────  ─────^^──────────────────
+ [_j_/_k_]  down/up       [_J_/_K_] down/up     [_s_]^^^^ horizontal      [_[_] shrink horiz   [_u_] restore prev layout
+ [_h_/_l_]  left/right    [_H_/_L_] left/right  [_S_]^^^^ horiz & follow  [_]_] enlarge horiz  [_U_] restore next layout
+ [_0_.._9_] window 0..9   [_r_]^^   rotate fwd  [_v_]^^^^ vertical        [_{_] shrink verti   [_d_] close current
+ [_w_]^^    other window  [_R_]^^   rotate bwd  [_V_]^^^^ verti & follow  [_}_] enlarge verti  [_D_] close other
+ [_o_]^^    other frame   ^^^^                  [_m_/_|_/___] maximize    %s^^^^^^^^^^^^^^^^^^ [_q_] quit"
+          (if (configuration-layer/package-used-p 'golden-ratio)
+              "[_g_] golden-ratio  "
+            "^^^^                  ")))
+
 (spacemacs|define-transient-state window-manipulation
-  :title "Window Manipulation Transient State"
-  :doc (concat "
- Select^^^^               Move^^^^              Split^^               Resize^^             Other^^
- ──────^^^^─────────────  ────^^^^────────────  ─────^^─────────────  ──────^^───────────  ─────^^──────────────────
- [_j_/_k_]  down/up       [_J_/_K_] down/up     [_s_] horizontal      [_[_] shrink horiz   [_u_] restore prev layout
- [_h_/_l_]  left/right    [_H_/_L_] left/right  [_S_] horiz & follow  [_]_] enlarge horiz  [_U_] restore next layout
- [_0_.._9_] window 0..9   [_r_]^^   rotate fwd  [_v_] vertical        [_{_] shrink verti   [_d_] close current
- [_w_]^^    other window  [_R_]^^   rotate bwd  [_V_] verti & follow  [_}_] enlarge verti  [_D_] close other
- [_o_]^^    other frame   ^^^^                  ^^                    ^^                   "
-               (if (configuration-layer/package-used-p 'golden-ratio)
-                   "[_g_] golden-ratio %`golden-ratio-mode"
-                 "")
-               "\n ^^^^                     ^^^^                  ^^                    ^^                   [_q_] quit")
+  :title "Window Manipulation TS"
+  :hint-is-doc t
+  :dynamic-hint (spacemacs//window-manipulation-ts-hint)
   :bindings
   ("q" nil :exit t)
+  ("?" spacemacs//window-manipulation-ts-toggle-hint)
   ("0" winum-select-window-0)
   ("1" winum-select-window-1)
   ("2" winum-select-window-2)
@@ -700,9 +731,16 @@ respond to this toggle."
   ("U" winner-redo)
   ("v" split-window-right)
   ("V" split-window-right-and-focus)
+  ("m" spacemacs/toggle-maximize-buffer)
+  ("_" spacemacs/maximize-horizontally)
+  ("|" spacemacs/maximize-vertically)
   ("w" other-window))
-(spacemacs/set-leader-keys "w."
-  'spacemacs/window-manipulation-transient-state/body)
+(spacemacs/set-leader-keys
+  "w." 'spacemacs/window-manipulation-transient-state/body
+  "w[" 'spacemacs/window-manipulation-transient-state/spacemacs/shrink-window-horizontally
+  "w]" 'spacemacs/window-manipulation-transient-state/spacemacs/enlarge-window-horizontally
+  "w{" 'spacemacs/window-manipulation-transient-state/spacemacs/shrink-window
+  "w}" 'spacemacs/window-manipulation-transient-state/spacemacs/enlarge-window)
 
 ;; end of Window Manipulation Transient State
 
@@ -736,13 +774,16 @@ otherwise it is scaled down."
 
 (spacemacs|define-transient-state scale-font
   :title "Font Scaling Transient State"
-  :doc "\n[_+_/_=_] scale up [_-_] scale down [_0_] reset font [_q_] quit"
+  :doc "\n[_+_/_=_/_k_] scale up [_-_/_j_] scale down [_0_] reset font [_q_] quit"
   :bindings
   ("+" spacemacs/scale-up-font)
+  ("k" spacemacs/scale-up-font)
   ("=" spacemacs/scale-up-font)
   ("-" spacemacs/scale-down-font)
+  ("j" spacemacs/scale-down-font)
   ("0" spacemacs/reset-font-size)
   ("q" nil :exit t))
+
 (spacemacs/set-leader-keys "zx" 'spacemacs/scale-font-transient-state/body)
 
 ;; end of Text Manipulation Transient State
@@ -801,11 +842,13 @@ If FRAME is nil, it defaults to the selected frame."
 
 (spacemacs|define-transient-state scale-transparency
   :title "Frame Transparency Transient State"
-  :doc "\n[_+_/_=_] increase transparency [_-_] decrease [_T_] toggle [_q_] quit"
+  :doc "\n[_+_/_=_/_k_] increase transparency [_-_/_j_] decrease [_T_] toggle [_q_] quit"
   :bindings
   ("+" spacemacs/increase-transparency)
+  ("k" spacemacs/increase-transparency)
   ("=" spacemacs/increase-transparency)
   ("-" spacemacs/decrease-transparency)
+  ("j" spacemacs/decrease-transparency)
   ("T" spacemacs/toggle-transparency)
   ("q" nil :exit t))
 (spacemacs/set-leader-keys "TT"
