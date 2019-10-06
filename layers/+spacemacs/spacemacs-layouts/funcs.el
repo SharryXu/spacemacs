@@ -1,4 +1,4 @@
-;;; funcs.el --- Spacemacs Layouts Layer functions File
+;;; funcs.el --- Spacemacs Layouts Layer functions File -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
 ;;
@@ -79,6 +79,10 @@ Cancels autosave on exiting perspectives mode."
   (interactive)
   (let ((ivy-ignore-buffers (remove #'spacemacs//layout-not-contains-buffer-p ivy-ignore-buffers)))
     (ivy-switch-buffer)))
+
+(defun spacemacs-layouts//advice-with-persp-buffer-list (orig-fun &rest args)
+  "Advice to provide perp buffer list."
+  (with-persp-buffer-list () (apply orig-fun args)))
 
 
 ;; Persp transient-state
@@ -164,13 +168,10 @@ ask the user if a new layout should be created."
       (let ((persp-reset-windows-on-nil-window-conf t)
             (generated-name (and dotspacemacs-auto-generate-layout-names
                                  (spacemacs//generate-layout-name pos))))
-        (cond
-         (generated-name
-          (persp-switch generated-name))
-         ((y-or-n-p (concat "Layout in this position doesn't exist. "
-                            "Do you want to create one? "))
-          (persp-switch nil)
-          (spacemacs/home-delete-other-windows)))))))
+        (if generated-name
+            (persp-switch generated-name) ; select an existing layout
+          (persp-switch nil)              ; create a new layout
+          (spacemacs/home-delete-other-windows))))))
 
 ;; Define all `spacemacs/persp-switch-to-X' functions
 (dolist (i (number-sequence 9 0 -1))
@@ -292,7 +293,7 @@ Available PROPS:
                                        ,binding ,already-defined? ,name)
              (setq spacemacs--custom-layout-alist
                    (delete (assoc ,binding spacemacs--custom-layout-alist)
-                     spacemacs--custom-layout-alist))
+                           spacemacs--custom-layout-alist))
              (push '(,binding . ,name) spacemacs--custom-layout-alist))
          (push '(,binding . ,name) spacemacs--custom-layout-alist)))))
 
@@ -354,10 +355,10 @@ buffers that belong to the current buffer's project."
   (if (persp-with-name-exists-p name)
       (message "There is already a perspective named %s" name)
     (if-let ((project (projectile-project-p)))
-      (spacemacs||switch-layout name
-        :init
-        (persp-add-buffer (projectile-project-buffers project)
-                          (persp-get-by-name name) nil nil))
+        (spacemacs||switch-layout name
+          :init
+          (persp-add-buffer (projectile-project-buffers project)
+                            (persp-get-by-name name) nil nil))
       (message "Current buffer does not belong to a project"))))
 
 (defmacro spacemacs||switch-project-persp (name &rest body)
@@ -489,6 +490,18 @@ perspectives does."
                                     (persp-kill-without-buffers project)))))
       (projectile-switch-project-by-name project))))
 
+(defun spacemacs//helm-persp-switch-project-action-maker (project-action)
+  "Make persistent actions for `spacemacs/helm-persp-switch-project'.
+Run PROJECT-ACTION on project."
+  (lambda (project)
+    (spacemacs||switch-project-persp project
+      (let ((projectile-completion-system 'helm)
+            (projectile-switch-project-action project-action)
+            (helm-quit-hook (append helm-quit-hook
+                                    (lambda ()
+                                      (persp-kill-without-buffers project)))))
+        (projectile-switch-project-by-name project)))))
+
 (defun spacemacs/helm-persp-switch-project (arg)
   "Select a project layout using Helm."
   (interactive "P")
@@ -502,8 +515,14 @@ perspectives does."
                projectile-known-projects))
      :fuzzy-match helm-projectile-fuzzy-match
      :mode-line helm-read-file-name-mode-line-string
-     :action '(("Switch to Project Perspective" .
-                spacemacs//helm-persp-switch-project-action)))
+     :action `(("Switch to Project Perspective" .
+                spacemacs//helm-persp-switch-project-action)
+               ("Switch to Project Perspective and Show Recent Files" .
+                ,(spacemacs//helm-persp-switch-project-action-maker
+                  'helm-projectile-recentf))
+               ("Switch to Project Perspective and Search" .
+                ,(spacemacs//helm-persp-switch-project-action-maker
+                  'spacemacs/helm-project-smart-do-search))))
    :buffer "*Helm Projectile Layouts*"))
 
 
@@ -626,6 +645,12 @@ STATE is a window-state object as returned by `window-state-get'."
 
 
 ;; Eyebrowse transient state
+
+(defun spacemacs/single-win-workspace ()
+  "Create a new single window workspace, and show the Spacemacs home buffer."
+  (interactive)
+  (let ((eyebrowse-new-workspace 'spacemacs/home))
+    (eyebrowse-create-window-config)))
 
 (defun spacemacs//workspaces-ts-toggle-hint ()
   "Toggle the full hint docstring for the workspaces transient-state."

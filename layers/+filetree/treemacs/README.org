@@ -11,6 +11,7 @@
 - [[#configuration][Configuration]]
   - [[#follow-mode][Follow mode]]
   - [[#file-watch][File watch]]
+  - [[#git-mode][Git mode]]
   - [[#collapsed-directories][Collapsed directories]]
   - [[#locking-width][Locking width]]
 - [[#key-bindings][Key bindings]]
@@ -68,6 +69,19 @@ part of the file system shown by treemacs set the layer variable
 
 Default is =t=.
 
+** Git mode
+To enable Treemacs to check for files’ and directories’ git status information
+and highlight them accordingly, set the layer variable =treemacs-use-git-mode=
+to =simple=, =extended=, or =deferred=. See the [[https://github.com/Alexander-Miller/treemacs#git-mode][Treemacs doc]] for a more detailed
+explanation.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default dotspacemacs-configuration-layers '(
+    (treemacs :variables treemacs-use-git-mode 'deferred)))
+#+END_SRC
+
+Default is =nil=.
+
 ** Collapsed directories
 *This feature requires python to be installed*.
 
@@ -123,10 +137,10 @@ many other commands.
 | ~M-K/P~     | Go to the previous line in ~next-window~..                                                                     |
 | ~M-j/M-n~   | Select next node at the same depth as currently selected node, if possible.                                    |
 | ~M-k/M-p~   | Select previous node at the same depth as currently selected node, if possible.                                |
-| ~C-p a~     | Select a new project to add to the treemacs workspace.                                                         |
-| ~C-p p~     | Select a projectile project to add to the workspace.                                                           |
-| ~C-p d~     | Remove project at point from the workspace.                                                                    |
-| ~C-p r~     | Rename project at point.                                                                                       |
+| ~C-c C-p a~ | Select a new project to add to the treemacs workspace.                                                         |
+| ~C-c C-p p~ | Select a projectile project to add to the workspace.                                                           |
+| ~C-c C-p d~ | Remove project at point from the workspace.                                                                    |
+| ~C-c C-p r~ | Rename project at point.                                                                                       |
 | ~th~        | Toggle the hiding and displaying of dotfiles.                                                                  |
 | ~tw~        | Toggle whether the treemacs buffer should have a fixed width.                                                  |
 | ~tf~        | Toggle treemacs-follow-mode.                                                                                   |
