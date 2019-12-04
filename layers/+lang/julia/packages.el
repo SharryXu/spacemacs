@@ -16,11 +16,7 @@
     flycheck
     julia-mode
     julia-repl
-    (lsp-julia :location (recipe :fetcher github
-                                 :repo "gdkrmr/lsp-julia"
-                                 :files ("*.el"
-                                         "README.org"
-                                         "languageserver")))
+    lsp-julia
     ))
 
 (defun julia/init-julia-mode ()
@@ -29,7 +25,7 @@
     :init
     (progn
       (add-hook 'julia-mode-hook #'spacemacs//julia-setup-buffer)
-      (add-hook 'julia-mode-local-vars-hook #'spacemacs//go-setup-backend)
+      (add-hook 'julia-mode-local-vars-hook #'spacemacs//julia-setup-lsp)
       (if (and (configuration-layer/layer-used-p 'ess)
                julia-mode-enable-ess)
           (add-to-list 'auto-mode-alist
@@ -92,11 +88,16 @@
 
 
 (defun julia/post-init-evil-surround ()
-  (with-eval-after-load 'evil-surround
-    (add-to-list 'evil-surround-pairs-alist '(?b . ("begin " . " end")))
-    (add-to-list 'evil-surround-pairs-alist '(?q . ("quote " . " end")))
-    (add-to-list 'evil-surround-pairs-alist '(?: . (":("     .    ")")))
-    (add-to-list 'evil-surround-pairs-alist '(?l . ("let "   . " end")))))
+  (use-package evil-surround
+    :config
+    (progn
+      (add-hook
+       'julia-mode-hook
+       #'(lambda ()
+           (add-to-list 'evil-surround-pairs-alist '(?b . ("begin " . " end")))
+           (add-to-list 'evil-surround-pairs-alist '(?q . ("quote " . " end")))
+           (add-to-list 'evil-surround-pairs-alist '(?: . (":("     .    ")")))
+           (add-to-list 'evil-surround-pairs-alist '(?l . ("let "   . " end"))))))))
 
 (defun julia/init-lsp-julia ()
   (use-package lsp-julia

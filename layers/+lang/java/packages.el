@@ -22,8 +22,9 @@
         maven-test-mode
         (meghanada :toggle (not (version< emacs-version "25.1")))
         mvn
-        (lsp-java :requires lsp-mode lsp-ui company-lsp dap-mode)
+        (lsp-java :requires lsp-mode)
         org
+        smartparens
         ))
 
 (defun java/post-init-company ()
@@ -38,6 +39,10 @@
 
 (defun java/post-init-ggtags ()
   (add-hook 'java-mode-local-vars-hook #'spacemacs/ggtags-mode-enable))
+
+(defun java/post-init-smartparens ()
+  (with-eval-after-load 'smartparens
+    (sp-local-pair 'java-mode "/** " " */" :trigger "/**")))
 
 (defun java/init-gradle-mode ()
   (use-package gradle-mode
@@ -162,7 +167,7 @@
 (defun java/init-lsp-java ()
   (use-package lsp-java
     :defer t
-    :if (eq java-backend 'lsp)
+    :if (eq (spacemacs//java-backend) 'lsp)
     :config
     (progn
       ;; key bindings
