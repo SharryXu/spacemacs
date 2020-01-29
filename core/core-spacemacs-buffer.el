@@ -620,7 +620,7 @@ REAL-WIDTH: the real width of the line.  If the line contains an image, the size
   (insert " ")
   (widget-create 'url-link
                  :tag (propertize "Homepage" 'face 'font-lock-keyword-face)
-                 :help-echo "Open the Spacemacs Github page in your browser."
+                 :help-echo "Open the Spacemacs GitHub page in your browser."
                  :mouse-face 'highlight
                  :follow-link "\C-m"
                  "http://spacemacs.org")
@@ -1056,13 +1056,22 @@ REFRESH if the buffer should be redrawn."
 
 (defun spacemacs-buffer//resize-on-hook ()
   "Hook run on window resize events to redisplay the home buffer."
-  (let ((home-buffer (get-buffer-window spacemacs-buffer-name))
-        (frame-win (frame-selected-window)))
-    (when (and dotspacemacs-startup-buffer-responsive
-               home-buffer
-               (not (window-minibuffer-p frame-win)))
-      (with-selected-window home-buffer
-        (spacemacs-buffer/goto-buffer)))))
+  ;; prevent spacemacs buffer redisplay in the filetree window
+  (unless (memq this-command '(neotree-find-project-root
+                               neotree-show
+                               neotree-toggle
+                               spacemacs/treemacs-project-toggle
+                               treemacs
+                               treemacs-bookmark
+                               treemacs-find-file
+                               treemacs-select-window))
+   (let ((home-buffer (get-buffer-window spacemacs-buffer-name))
+         (frame-win (frame-selected-window)))
+     (when (and dotspacemacs-startup-buffer-responsive
+                home-buffer
+                (not (window-minibuffer-p frame-win)))
+       (with-selected-window home-buffer
+         (spacemacs-buffer/goto-buffer))))))
 
 (defun spacemacs-buffer/refresh ()
   "Force recreation of the spacemacs buffer."
