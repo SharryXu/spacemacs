@@ -143,9 +143,9 @@
 	(c-toggle-auto-newline -1)
 	(defvar c-c++-default-mode-for-headers 'c-mode)
 	(defvar c-c++-enable-c++11 nil)
-	(defvar flycheck-clang-language-standard "gnu99")
-	(defvar flycheck-gcc-language-standard "gnu99")
-	(defvar flycheck-cppcheck-standards "gun99")
+;;(defvar flycheck-clang-language-standard "gnu99")
+;;(defvar flycheck-gcc-language-standard "gnu99")
+;;(defvar flycheck-cppcheck-standards "gun99")
 	(c-add-style "sharry" sharry-code-style-for-c)
 	(c-set-style "sharry"))
 
@@ -266,14 +266,21 @@
 		(while docsets (helm-dash-async-install-docset (car docsets))
 					 (setq docsets (cdr docsets)))))
 
+(defun sharry/strip-duplicates (list)
+  (let ((new-list nil))
+    (while list
+      (when (and (car list) (not (member (car list) new-list)))
+        (setq new-list (cons (car list) new-list)))
+      (setq list (cdr list)))
+        (nreverse new-list)))
+
 (defun sharry/configure-exec-path ()
 	"Configure the exec path variable."
 	(interactive)
 	(progn (message "Configure exec path...")
 				 (set-variable 'exec-path-from-shell-check-startup-files nil)
 				 (exec-path-from-shell-initialize)
-				 (setq exec-path (remove-duplicates exec-path
-																						:test 'string=))))
+				 (setq exec-path (sharry/strip-duplicates exec-path))))
 
 (defun sharry/run-python-program ()
 	"Execute python program."
