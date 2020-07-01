@@ -10,19 +10,21 @@
 - [[#layer-installation][Layer Installation]]
 - [[#backends][Backends]]
   - [[#metals][Metals]]
-  - [[#ensime][Ensime]]
+  - [[#ensime-deprecated][Ensime (deprecated)]]
     - [[#installation-when-using-sbt][Installation when using SBT]]
     - [[#installation-when-using-gradle][Installation when using Gradle]]
     - [[#configuration][Configuration]]
     - [[#usage][Usage]]
 - [[#scalastyle][Scalastyle]]
   - [[#use-java-doc-style][Use Java doc-style]]
+- [[#enable-debug-adapter-protocol-dap][Enable Debug Adapter Protocol (DAP)]]
 - [[#automatically-show-the-type-of-the-symbol-under-the-cursor][Automatically show the type of the symbol under the cursor]]
 - [[#automatically-insert-asterisk-in-multiline-comments][Automatically insert asterisk in multiline comments]]
-- [[#automatically-replace-arrows-with-unicode-ones][Automatically replace arrows with unicode ones]]
+- [[#deprecated-automatic-replacement-of-arrows-with-unicode-ones][Deprecated: Automatic replacement of arrows with Unicode ones]]
+- [[#enable-gtags-as-a-fallback-navigation-utility][Enable GTags as a fallback navigation utility]]
 - [[#auto-start][Auto-start]]
 - [[#key-bindings][Key bindings]]
-  - [[#ensime-1][Ensime]]
+  - [[#ensime][Ensime]]
     - [[#search][Search]]
     - [[#ensime-search-mode][Ensime Search Mode]]
     - [[#sbt][sbt]]
@@ -43,13 +45,16 @@ This layer adds support for the Scala language to Spacemacs.
 ** Features:
 - Syntax highlighting
 - Support for language backend. Either using [[https://ensime.github.io/][ENSIME]] or [[https://scalameta.org/metals/][Metals]]
+- Debugging support via dap
 - Auto-completion
+- Treeview support for viewing project structure and triggering compilation
 - Syntax-checking
 - Refactoring
 - Incremental compilation
 - Scala Repl
 - Style linting
 - Eldoc integration
+- Optional GGTags search
 - Test execution directly from Emacs
 - Automatic replacement of ASCII arrows with unicode ones
 
@@ -97,6 +102,7 @@ and project-wide type-checking.
 
 You will also need to modify your =dotspacemacs/user-init= to pull the recommended Ensime
 version (Stable):
+
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'configuration-layer-elpa-archives '("melpa-stable" . "stable.melpa.org/packages/"))
   (add-to-list 'package-pinned-packages '(ensime . "melpa-stable"))
@@ -173,6 +179,9 @@ To enable =java-doc-style=, set the variable =scala-indent:use-javadoc-style= to
     (scala :variables scala-indent:use-javadoc-style t)))
 #+END_SRC
 
+* Enable Debug Adapter Protocol (DAP)
+The metals backend enables integration with the DAP layer for debugging support.
+
 * Automatically show the type of the symbol under the cursor
 To enable the feature =ensime-type-at-point= when cursor moves, set the
 variable =scala-enable-eldoc= to =t=.
@@ -193,17 +202,31 @@ variable =scala-auto-insert-asterisk-in-comments= to =t=.
     (scala :variables scala-auto-insert-asterisk-in-comments t)))
 #+END_SRC
 
-* Automatically replace arrows with unicode ones
-To replace ~=>~, =->= and =<-= with unicode arrows =⇒=, =→= and =←=, set the
-variable =scala-use-unicode-arrows= to =t=.
-
-If in some occasions you don't want the arrows replaced (for example when
-defining compound operators like ~=>>~), you can always undo the change and get
-the ascii arrows back.
+* Deprecated: Automatic replacement of arrows with Unicode ones
+Scala used to support Unicode arrows =⇒=, =→= as aliases for ~=>~, =->= and =<-=, and the
+Scala layer would do the conversion to Unicode for you if you set
+=scala-use-unicode-arrows= to =t=. As the Unicode arrows are now [[https://github.com/scala/scala/pull/7540][deprecated]] in
+Scala, this variable has been dropped from the Scala layer. If it is still in
+your Scala layer variables like so:
 
 #+BEGIN_SRC emacs-lisp
   (setq-default dotspacemacs-configuration-layers '(
     (scala :variables scala-use-unicode-arrows t)))
+#+END_SRC
+
+Then you will need to remove it:
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default dotspacemacs-configuration-layers '(scala))
+#+END_SRC
+
+* Enable GTags as a fallback navigation utility
+To enable gtags when in scala-mode, in case metals, or, ensime are not fully
+functioning set the variable =scala-enable-gtags= to =t=.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default dotspacemacs-configuration-layers '(
+    (scala :variables scala-enable-gtags t)))
 #+END_SRC
 
 * Auto-start
