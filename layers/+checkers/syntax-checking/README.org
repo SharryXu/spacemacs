@@ -12,7 +12,9 @@
   - [[#enablingdisabling-tooltips][Enabling/Disabling tooltips]]
   - [[#disabling-by-default][Disabling by default]]
   - [[#enable-flycheck-globally][Enable flycheck globally]]
+  - [[#enable-support-for-traditional-error-navigation][Enable support for traditional error navigation]]
   - [[#bitmaps][Bitmaps]]
+  - [[#auto-hide-tooltips][Auto hide tooltips]]
 - [[#key-bindings][Key bindings]]
 
 * Description
@@ -70,6 +72,19 @@ This may result in loading slow or not properly configured checkers
 as well as break some of the more advanced configuration settings
 of the layer system.
 
+** Enable support for traditional error navigation
+By default spacemacs takes care to call the right function to jump
+to the next or previous error. However if wished flycheck can also
+override =next-error= and =previous-error= respectively allowing
+to use alternative general emacs bindings instead of the spacemacs
+specific ones. To do so set =syntax-checking-use-standard-error-navigation=
+to non-nil.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default dotspacemacs-configuration-layers
+    '((syntax-checking :variables syntax-checking-use-standard-error-navigation t)))
+#+END_SRC
+
 ** Bitmaps
 If the original flycheck fringe bitmaps are more to your liking, you can set the
 variable =syntax-checking-use-original-bitmaps= to =t=:
@@ -77,6 +92,18 @@ variable =syntax-checking-use-original-bitmaps= to =t=:
 #+BEGIN_SRC emacs-lisp
   (setq-default dotspacemacs-configuration-layers
     '((syntax-checking :variables syntax-checking-use-original-bitmaps t)))
+#+END_SRC
+
+** Auto hide tooltips
+You can set time in seconds after which tooltips are automatically hidden by setting
+the variable =syntax-checking-auto-hide-tooltips= to a positive number of seconds.
+
+Default value of =syntax-checking-auto-hide-tooltips= is =nil=, and in that case tooltips
+are kept open until the cursor is moved.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default dotspacemacs-configuration-layers
+    '((syntax-checking :variables syntax-checking-auto-hide-tooltips 10)))
 #+END_SRC
 
 * Key bindings

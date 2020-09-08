@@ -29,10 +29,7 @@
     :modes inferior-ess-r-mode)
 
   ;; Set R company to lsp manually to include file completion
-  (if (eq (spacemacs//ess-r-backend) 'lsp)
-      (spacemacs|add-company-backends
-        :backends company-lsp
-        :modes ess-r-mode)
+  (unless (eq (spacemacs//ess-r-backend) 'lsp)
     (spacemacs|add-company-backends
       :backends (company-R-library company-R-args company-R-objects :separate)
       :modes ess-r-mode)))
@@ -73,10 +70,7 @@
     :init
     (progn
       (setq ess-use-company nil
-            ;; Follow Hadley Wickham's R style guide
-            ess-first-continued-statement-offset 2
-            ess-continued-statement-offset 0
-            ess-expression-offset 2
+						ess-offset-continued 'straight
             ess-nuke-trailing-whitespace-p t
             ess-default-style 'DEFAULT)
 

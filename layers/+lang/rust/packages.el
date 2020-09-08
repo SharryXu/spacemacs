@@ -1,6 +1,6 @@
 ;;; packages.el --- Rust Layer packages File for Spacemacs
 ;;
-;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
+;; Copyright (c) 2012-2020 Sylvain Benner & Contributors
 ;;
 ;; Author: Chris Hoeppner <me@mkaito.com>
 ;; URL: https://github.com/syl20bnr/spacemacs
@@ -9,21 +9,21 @@
 ;;
 ;;; License: GPLv3
 
-(setq rust-packages
-      '(
-        cargo
-        company
-        counsel-gtags
-        dap-mode
-        flycheck
-        (flycheck-rust :requires flycheck)
-        ggtags
-        helm-gtags
-        racer
-        rust-mode
-        smartparens
-        toml-mode
-        ))
+(defconst rust-packages
+  '(
+    cargo
+    company
+    counsel-gtags
+    dap-mode
+    flycheck
+    (flycheck-rust :requires flycheck)
+    ggtags
+    helm-gtags
+    ron-mode
+    racer
+    rust-mode
+    smartparens
+    toml-mode))
 
 (defun rust/init-cargo ()
   (use-package cargo
@@ -33,21 +33,26 @@
       (spacemacs/declare-prefix-for-mode 'rust-mode "mc" "cargo")
       (spacemacs/set-leader-keys-for-major-mode 'rust-mode
         "c." 'cargo-process-repeat
-        "cC" 'cargo-process-clean
-        "cX" 'cargo-process-run-example
+        "ca" 'cargo-process-add
+        "cA" 'cargo-process-audit
         "cc" 'cargo-process-build
+        "cC" 'cargo-process-clean
         "cd" 'cargo-process-doc
         "cD" 'cargo-process-doc-open
         "ce" 'cargo-process-bench
+        "cE" 'cargo-process-run-example
         "cf" 'cargo-process-fmt
         "ci" 'cargo-process-init
         "cl" 'cargo-process-clippy
         "cn" 'cargo-process-new
         "co" 'cargo-process-current-file-tests
+        "cr" 'cargo-process-rm
         "cs" 'cargo-process-search
         "ct" 'cargo-process-current-test
         "cu" 'cargo-process-update
+        "cU" 'cargo-process-upgrade
         "cx" 'cargo-process-run
+        "cX" 'cargo-process-run-bin
         "cv" 'cargo-process-check
         "t" 'cargo-process-test))))
 
@@ -59,7 +64,8 @@
   (spacemacs/counsel-gtags-define-keys-for-mode 'rust-mode))
 
 (defun rust/pre-init-dap-mode ()
-  (add-to-list 'spacemacs--dap-supported-modes 'rust-mode)
+  (pcase (spacemacs//rust-backend)
+    (`lsp (add-to-list 'spacemacs--dap-supported-modes 'rust-mode)))
   (add-hook 'rust-mode-local-vars-hook #'spacemacs//rust-setup-dap))
 
 (defun rust/post-init-flycheck ()
@@ -112,3 +118,8 @@
 (defun rust/init-toml-mode ()
   (use-package toml-mode
     :mode "/\\(Cargo.lock\\|\\.cargo/config\\)\\'"))
+
+(defun rust/init-ron-mode ()
+  (use-package ron-mode
+    :mode ("\\.ron\\'" . ron-mode)
+    :defer t))

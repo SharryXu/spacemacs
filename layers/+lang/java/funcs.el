@@ -1,4 +1,4 @@
-;;; packages.el --- Java functions File for Spacemacs
+;;; funcs.el --- Java functions File for Spacemacs
 ;;
 ;; Copyright (c) 2012-2018 Sylvain Benner & Contributors
 ;;
@@ -26,8 +26,7 @@
 (defun spacemacs//java-setup-company ()
   "Conditionally setup company based on backend."
   (pcase (spacemacs//java-backend)
-    (`meghanada (spacemacs//java-setup-meghanada-company))
-    (`lsp (spacemacs//java-setup-lsp-company))))
+    (`meghanada (spacemacs//java-setup-meghanada-company))))
 
 (defun spacemacs//java-setup-dap ()
   "Conditionally setup elixir DAP integration."
@@ -83,24 +82,6 @@
   (mvn-compile))
 
 
-;; Gradle
-
-(defun spacemacs/gradle-clean ()
-  "Execute 'gradle clean' command."
-  (interactive)
-  (gradle-execute "clean"))
-
-(defun spacemacs/gradle-clean-build ()
-  "Execute 'gradle clean build' command."
-  (interactive)
-  (gradle-execute "clean build"))
-
-(defun spacemacs/gradle-test-buffer ()
-  "Execute 'gradle test' command against current buffer tests."
-  (interactive)
-  (gradle-single-test (file-name-base (buffer-file-name))))
-
-
 ;; Misc
 
 (defun spacemacs//java-delete-horizontal-space ()
@@ -119,18 +100,6 @@
         (lsp))
     (message "`lsp' layer is not installed, please add `lsp' layer to your dotfile.")))
 
-(defun spacemacs//java-setup-lsp-company ()
-  "Setup lsp auto-completion."
-  (if (configuration-layer/layer-used-p 'lsp)
-      (progn
-        (spacemacs|add-company-backends
-          :backends company-lsp
-          :modes java-mode
-          :append-hooks nil
-          :call-hooks t)
-        (company-mode))
-    (message "`lsp' layer is not installed, please add `lsp' layer to your dotfile.")))
-
 (defun spacemacs//java-setup-lsp-dap ()
   "Setup DAP integration."
   (require 'dap-java)
@@ -145,9 +114,5 @@
 
 (defun spacemacs//java-setup-lsp-flycheck ()
   "Setup LSP Java syntax checking."
-  (if (configuration-layer/layer-used-p 'lsp)
-      (when (spacemacs/enable-flycheck 'java-mode)
-        (require 'lsp-ui-flycheck)
-        (lsp-ui-flycheck-enable nil)
-        (flycheck-mode))
+  (unless (configuration-layer/layer-used-p 'lsp)
     (message "`lsp' layer is not installed, please add `lsp' layer to your dotfile.")))

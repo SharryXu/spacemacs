@@ -34,6 +34,15 @@
                                  (match-end 1) "∈")
                  nil))))))
 
+
+(defun spacemacs/cider-eval-sexp-end-of-line ()
+  "Evaluate the last sexp at the end of the current line."
+  (interactive)
+  (save-excursion
+    (end-of-line)
+    (cider-eval-last-sexp)))
+
+
 (defun spacemacs//cider-eval-in-repl-no-focus (form)
   "Insert FORM in the REPL buffer and eval it."
   (while (string-match "\\`[ \t\n\r]+\\|[ \t\n\r]+\\'" form)
@@ -101,12 +110,12 @@ the focus."
   (cider-insert-ns-form-in-repl t)
   (evil-insert-state))
 
-(defun spacemacs/cider-send-buffer-in-repl-and-focus ()
+(defun spacemacs/cider-send-buffer-in-repl-and-focus (&optional set-namespace)
   "Send the current buffer in the REPL and switch to the REPL in
-`insert state'."
-  (interactive)
+`insert state'. When set-namespace, also change into the namespace of the buffer."
+  (interactive "P")
   (cider-load-buffer)
-  (cider-switch-to-repl-buffer)
+  (cider-switch-to-repl-buffer set-namespace)
   (evil-insert-state))
 
 (defun spacemacs/cider-test-run-focused-test ()
@@ -223,3 +232,10 @@ in your Spacemacs configuration:
   (if (company-tooltip-visible-p)
       (company-select-previous)
     (cider-repl-previous-input)))
+
+(defun spacemacs/cider-find-and-clear-repl-buffer ()
+  "Calls cider-find-and-clear-repl-output interactively with C-u prefix
+set so that it clears the whole REPL buffer, not just the output."
+  (interactive)
+  (let ((current-prefix-arg '(4)))
+    (call-interactively 'cider-find-and-clear-repl-output)))

@@ -14,6 +14,7 @@
         cider
         cider-eval-sexp-fu
         (clj-refactor :toggle clojure-enable-clj-refactor)
+        (helm-cider :toggle (configuration-layer/layer-used-p 'helm))
         clojure-mode
         (clojure-snippets :toggle (configuration-layer/layer-used-p 'auto-completion))
         company
@@ -67,6 +68,7 @@
                ("m=e" . "edn")
                ("md" . "debug")
                ("me" . "evaluation")
+               ("mep" . "pretty print")
                ("mg" . "goto")
                ("mh" . "documentation")
                ("mm" . "manage repls")
@@ -99,19 +101,26 @@
             "hj" 'cider-javadoc
             "hn" 'cider-browse-ns
             "hN" 'cider-browse-ns-all
+            "hs" 'cider-browse-spec
+            "hS" 'cider-browse-spec-all
+
 
             ;; evaluate in source code buffer
             "e;" 'cider-eval-defun-to-comment
+            "e$" 'spacemacs/cider-eval-sexp-end-of-line
             "eb" 'cider-eval-buffer
             "ee" 'cider-eval-last-sexp
             "ef" 'cider-eval-defun-at-point
             "ei" 'cider-interrupt
+            "el" 'spacemacs/cider-eval-sexp-end-of-line
             "em" 'cider-macroexpand-1
             "eM" 'cider-macroexpand-all
             "en" 'cider-ns-refresh
             "eN" 'cider-ns-reload  ;; SPC u for cider-ns-reload-all
-            "ep" 'cider-pprint-eval-defun-at-point
-            "eP" 'cider-pprint-eval-last-sexp
+            "ep;" 'cider-pprint-eval-defun-to-comment
+            "ep:" 'cider-pprint-eval-last-sexp-to-comment
+            "epf" 'cider-pprint-eval-defun-at-point
+            "epe" 'cider-pprint-eval-last-sexp
             "er" 'cider-eval-region
             "eu" 'cider-undef
             "ev" 'cider-eval-sexp-at-point
@@ -167,7 +176,7 @@
             "sjj" 'cider-jack-in-clj
             "sjm" 'cider-jack-in-clj&cljs
             "sjs" 'cider-jack-in-cljs
-            "sl" 'cider-repl-clear-buffer
+            "sl" 'spacemacs/cider-find-and-clear-repl-buffer
             "sL" 'cider-find-and-clear-repl-output
             "sn" 'spacemacs/cider-send-ns-form-to-repl
             "sN" 'spacemacs/cider-send-ns-form-to-repl-focus
@@ -214,7 +223,7 @@
       (spacemacs/set-leader-keys-for-major-mode 'cider-repl-mode
         "," 'cider-repl-handle-shortcut)
       (spacemacs/set-leader-keys-for-major-mode 'cider-clojure-interaction-mode
-        "ep" 'cider-eval-print-last-sexp))
+        "epl" 'cider-eval-print-last-sexp))
     :config
     (progn
       ;; add support for golden-ratio
@@ -313,6 +322,20 @@
               (spacemacs/set-leader-keys-for-major-mode m
                 (concat "r" binding) func))))))))
 
+(defun clojure/init-helm-cider ()
+  (use-package helm-cider
+    :defer t
+    :init
+    (progn
+      (add-hook 'clojure-mode-hook 'helm-cider-mode)
+      (setq sayid--key-binding-prefixes
+            '(("mhc" . "helm-cider-cheatsheet")))
+      (spacemacs|forall-clojure-modes m
+        (mapc (lambda (x) (spacemacs/declare-prefix-for-mode
+                            m (car x) (cdr x)))
+              sayid--key-binding-prefixes)
+        (spacemacs/set-leader-keys-for-major-mode m
+          "hc" 'helm-cider-cheatsheet)))))
 
 (defun clojure/init-clojure-mode ()
   (use-package clojure-mode
@@ -344,6 +367,8 @@
                 clj-refactor--key-binding-prefixes)
           (spacemacs/set-leader-keys-for-major-mode m
             "=l" 'clojure-align
+            "ran" 'clojure-insert-ns-form
+            "raN" 'clojure-insert-ns-form-at-point
             "rci" 'clojure-cycle-if
             "rcp" 'clojure-cycle-privacy
             "rc#" 'clojure-convert-collection-to-set
@@ -352,6 +377,7 @@
             "rc[" 'clojure-convert-collection-to-vector
             "rc{" 'clojure-convert-collection-to-map
             "rc:" 'clojure-toggle-keyword-string
+            "rsn" 'clojure-sort-ns
             "rtf" 'clojure-thread-first-all
             "rth" 'clojure-thread
             "rtl" 'clojure-thread-last-all

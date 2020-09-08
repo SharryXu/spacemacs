@@ -28,7 +28,7 @@
     - [[#quick-start-with-lein][Quick Start with lein]]
     - [[#more-details][More details]]
   - [[#managing-repl-connections][Managing REPL connections]]
-  - [[#cheatsheet][Cheatsheet]]
+  - [[#advanced-help][Advanced help]]
   - [[#structuraly-safe-editing][Structuraly safe editing]]
 - [[#key-bindings][Key bindings]]
   - [[#working-with-clojure-files-barfage-slurpage--more][Working with clojure files (barfage, slurpage & more)]]
@@ -65,10 +65,9 @@ and a full suite of tooling for Clojure development.
 - REPL via [[https://github.com/clojure-emacs/cider][CIDER]]
 - Code formatting via [[https://github.com/clojure-emacs/cider][CIDER]] using [[https://github.com/weavejester/cljfmt][Cljfmt]]
 - Refactoring via [[https://github.com/clojure-emacs/clj-refactor.el][clj-refactor]]
-- Linting via [[https://github.com/clojure-emacs/squiggly-clojure][squiggly-clojure]], [[https://github.com/borkdude/clj-kondo][clj-kondo]] or [[https://github.com/candid82/joker][joker]]
 - Aligning of code forms via [[https://github.com/clojure-emacs/clojure-mode][clojure-mode]]
 - Debugging with [[https://github.com/clojure-emacs/sayid][sayid]]
-- Clojure cheatsheet
+- Advanced help with [[https://github.com/clojure-emacs/helm-cider][helm-cider]]
 - Structuraly safe editing using optional [[https://github.com/luxbock/evil-cleverparens][evil-cleverparens]]
 - Linting via [[https://github.com/borkdude/clj-kondo][clj-kondo]] ([[https://github.com/candid82/joker][joker]] and [[https://github.com/clojure-emacs/squiggly-clojure][squiggly-clojure]] also available)
 
@@ -245,9 +244,8 @@ Or set this variable when loading the configuration layer:
 #+END_SRC
 
 *** Enabling sayid or clj-refactor
-
 The packages sayid (Clojure debugger) and clj-refactor (automatic refactorings)
-are disabled by default.  These packages are less active that the CIDER project
+are disabled by default. These packages are less active that the CIDER project
 and may cause issues when running CIDER.
 
 To enable them, add a =:variables= option when enabling the =clojure= layer,
@@ -278,7 +276,7 @@ If you are experiencing issues when running a REPL, try disabling these
 packages first and restart Spacemacs to see if the error persists.
 
 * Usage
-Read the keybindings section to see all the functionality available, or simply
+Read the key bindings section to see all the functionality available, or simply
 use the ~,~ or ~SPC m~ to open the which-key menu for the Clojure layer.
 
 ** Starting a REPL from Spacemacs
@@ -286,7 +284,7 @@ Open a Clojure file (=.clj=, =.cljs=, =.cljc=, =.edn=) and start a Clojure REPL,
 choosing the REPL session type (Clojure, ClojureScript or both Clojure & ClojureScript).
 
 ~, '~ and ~, s i~ calls the ~sesman-start~ command, a wrapper for all the
-~jack-in~ and ~connect~ commands.  A prompt appears allowing you to choose the
+~jack-in~ and ~connect~ commands. A prompt appears allowing you to choose the
 type of REPL session required.
 
 ~, s j~ opens the cider-jack-in menu, providing commands to start specific REPL sessions,
@@ -400,19 +398,22 @@ multiple projects or have multiple connections opened for the same project
 
 See REPL connections in the key bindings section for all the commands.
 
-** Cheatsheet
-This layers installs the [[https://github.com/clojure-emacs/clojure-cheatsheet][clojure-cheatsheet]] package which embeds this useful
-[[https://clojure.org/api/cheatsheet][cheatsheet]] into Emacs.
+** Advanced help
+This layer installs the [[https://github.com/clojure-emacs/helm-cider][helm-cider]] package which provides helm integration
+with cider apropos. It also embeds cider cheatsheet.
 
+Type ~SPC m h a~ to display advanced apropos window.
 Type ~SPC m h c~ to display the cheatsheet then type in some terms (space
-separated) to narrow down the list. For example, try typing in sort map to see
+separated) to narrow down the list. For example, try typing in "sort map" to see
 some functions that deal with sorting maps.
+
+NOTE: If helm is not used, then =cider-apropos= and =cider-cheatsheet= are used.
 
 ** Structuraly safe editing
 The Clojure layer adds support for =evil-cleverparens= which allows to safely edit
 lisp code by keeping the s-expressions balanced.
 
- ~SPC m T s~ will toggle safe structured editing, off by default.
+~SPC m T s~ will toggle safe structured editing, off by default.
 
 Enable safe structural editing for all =clojure= buffers using the following
 in the =dotspacemacs/user-config= function of your .spacemacs file
@@ -440,7 +441,7 @@ As this state works the same for all files, the documentation is in global
 
 ** Leader
 *** Shortcuts
-Shortcut keybindings for regularly used commands.
+Shortcut key bindings for regularly used commands.
 
 | Key binding | Description                                              |
 |-------------+----------------------------------------------------------|
@@ -470,33 +471,39 @@ Managing CIDER REPL connections and sessions
 | Key binding | Description                 |
 |-------------+-----------------------------|
 | ~SPC m h a~ | cider apropos               |
-| ~SPC m h c~ | clojure cheatsheet          |
+| ~SPC m h c~ | cider cheatsheet            |
 | ~SPC m h d~ | cider clojuredocs           |
 | ~SPC m h h~ | cider doc                   |
 | ~SPC m h j~ | cider javadoc               |
 | ~SPC m h n~ | cider browse namespace      |
 | ~SPC m h N~ | cider browse all namespaces |
+| ~SPC m h s~ | cider-browse-spec           |
+| ~SPC m h S~ | cider-browse-spec-all       |
 
 *** Evaluation
 Evaluate Clojure code in the source code buffer
 
-| Key binding | Description                                                        |
-|-------------+--------------------------------------------------------------------|
-| ~SPC m e ;~ | eval sexp and show result as comment                               |
-| ~SPC m e b~ | eval buffer                                                        |
-| ~SPC m e e~ | eval last sexp                                                     |
-| ~SPC m e f~ | eval function at point                                             |
-| ~SPC m e i~ | interrupt the current evaluation                                   |
-| ~SPC m e m~ | cider macroexpand 1                                                |
-| ~SPC m e M~ | cider macroexpand all                                              |
-| ~SPC m e n~ | refresh namespace (cider-ns-refresh)                               |
-| ~SPC m e N~ | reload namespace (cider-ns-reload), ~SPC u~ (cider-ns-reload-all)  |
-| ~SPC m e p~ | eval top-level sexp, pretty print result in separate buffer        |
-| ~SPC m e P~ | eval last sexp, pretty print result in separate buffer             |
-| ~SPC m e r~ | eval region                                                        |
-| ~SPC m e u~ | Undefine a symbol from the current namespace                       |
-| ~SPC m e v~ | eval sexp around point                                             |
-| ~SPC m e w~ | eval last sexp and replace with result                             |
+| Key binding   | Description                                                       |
+|---------------+-------------------------------------------------------------------|
+| ~SPC m e ;~   | eval sexp and show result as comment                              |
+| ~SPC m e $~   | go to end of line and eval last sexp                              |
+| ~SPC m e b~   | eval buffer                                                       |
+| ~SPC m e e~   | eval last sexp                                                    |
+| ~SPC m e f~   | eval function at point                                            |
+| ~SPC m e i~   | interrupt the current evaluation                                  |
+| ~SPC m e l~   | go to end of line and eval last sexp                              |
+| ~SPC m e m~   | cider macroexpand 1                                               |
+| ~SPC m e M~   | cider macroexpand all                                             |
+| ~SPC m e n~   | refresh namespace (cider-ns-refresh)                              |
+| ~SPC m e N~   | reload namespace (cider-ns-reload), ~SPC u~ (cider-ns-reload-all) |
+| ~SPC m e p ;~ | eval top-level sexp, pretty print result as a comment             |
+| ~SPC m e p :~ | eval last sexp, pretty print result as a comment                  |
+| ~SPC m e p f~ | eval top-level sexp, pretty print result in separate buffer       |
+| ~SPC m e p e~ | eval last sexp, pretty print result in separate buffer            |
+| ~SPC m e r~   | eval region                                                       |
+| ~SPC m e u~   | Undefine a symbol from the current namespace                      |
+| ~SPC m e v~   | eval sexp around point                                            |
+| ~SPC m e w~   | eval last sexp and replace with result                            |
 
 *** Goto
 
@@ -512,38 +519,39 @@ Evaluate Clojure code in the source code buffer
 | ~SPC m g S~ | browse all specs                             |
 
 *** Send code to REPL
-Use these keybindings when working directly with a REPL buffer.
-Use the Evaluation keybindings when evaluating in source code buffer.
+Use these key bindings when working directly with a REPL buffer.
+Use the Evaluation key bindings when evaluating in source code buffer.
 
-| Key binding   | Description                                                                |
-|---------------+----------------------------------------------------------------------------|
-| ~SPC m s a~   | switch between REPL and last Clojure source code buffer (cider-repl)       |
-| ~SPC m s b~   | send and eval buffer in REPL                                               |
-| ~SPC m s B~   | send and eval buffer and switch to REPL in =insert state=                  |
-| ~SPC m s c j~ | connect to a running Clojure REPL (cider-connect-clj)                      |
-| ~SPC m s c m~ | connect to a running Clojure & ClojureScript REPL (cider-connect-clj&cljs) |
-| ~SPC m s c s~ | connect to a running ClojureScript REPL (cider-connect-cljs)               |
-| ~SPC m s e~   | send and eval last sexp in REPL                                            |
-| ~SPC m s E~   | send and eval last sexp and switch to REPL in =insert state=               |
-| ~SPC m s f~   | send and eval function in REPL                                             |
-| ~SPC m s F~   | send and eval function and switch to REPL in =insert state=                |
-| ~SPC m s i~   | start a REPL - prompt for REPL type (sesman-start)                         |
-| ~SPC m s j j~ | start Clojure REPL (=cider-jack-in-clj=)                                   |
-| ~SPC m s j m~ | start Clojure REPL (=cider-jack-in-clj&cljs=)                              |
-| ~SPC m s j s~ | start ClojureScript REPL (=cider-jack-in-cljs=)                            |
-| ~SPC m l~     | clear REPL buffer (cider-repl-clear-buffer)                                |
-| ~SPC m L~     | clear and switch to REPL buffer (cider-find-and-clear-repl-output)         |
-| ~SPC m s n~   | send and eval ns form in REPL                                              |
-| ~SPC m s N~   | send and eval ns form and switch to REPL in =insert state=                 |
-| ~SPC m s o~   | switch to other repl instance (cider-repl-switch-to-other)                 |
-| ~SPC m s q n~ | reload namespace in REPL (cider-ns-reload)                                 |
-| ~SPC m s q N~ | reload all namespace in REPL (cider-ns-reload-all)                         |
-| ~SPC m s q q~ | quit REPL (cider-quit)                                                     |
-| ~SPC m s q r~ | restart REPL (cider-restart)                                               |
-| ~SPC m s r~   | send and eval region in REPL                                               |
-| ~SPC m s R~   | send and eval region and switch to REPL in =insert state=                  |
-| ~SPC m e u~   | require Clojure utils into current namespace - i.e. =doc= =source=         |
-| ~SPC m s p~   | print last sexp (clojure interaction mode only)                            |
+| Key binding       | Description                                                                |
+|-------------------+----------------------------------------------------------------------------|
+| ~SPC m s a~       | switch between REPL and last Clojure source code buffer (cider-repl)       |
+| ~SPC m s b~       | send and eval buffer in REPL                                               |
+| ~SPC m s B~       | send and eval buffer and switch to REPL in =insert state=                  |
+| ~SPC u SPC m s B~ | same as ~SPC m s B~ including switching to the buffer namespace in REPL    |
+| ~SPC m s c j~     | connect to a running Clojure REPL (cider-connect-clj)                      |
+| ~SPC m s c m~     | connect to a running Clojure & ClojureScript REPL (cider-connect-clj&cljs) |
+| ~SPC m s c s~     | connect to a running ClojureScript REPL (cider-connect-cljs)               |
+| ~SPC m s e~       | send and eval last sexp in REPL                                            |
+| ~SPC m s E~       | send and eval last sexp and switch to REPL in =insert state=               |
+| ~SPC m s f~       | send and eval function in REPL                                             |
+| ~SPC m s F~       | send and eval function and switch to REPL in =insert state=                |
+| ~SPC m s i~       | start a REPL - prompt for REPL type (sesman-start)                         |
+| ~SPC m s j j~     | start Clojure REPL (=cider-jack-in-clj=)                                   |
+| ~SPC m s j m~     | start Clojure REPL (=cider-jack-in-clj&cljs=)                              |
+| ~SPC m s j s~     | start ClojureScript REPL (=cider-jack-in-cljs=)                            |
+| ~SPC m l~         | clear REPL buffer (cider-repl-clear-buffer)                                |
+| ~SPC m L~         | clear and switch to REPL buffer (cider-find-and-clear-repl-output)         |
+| ~SPC m s n~       | send and eval ns form in REPL                                              |
+| ~SPC m s N~       | send and eval ns form and switch to REPL in =insert state=                 |
+| ~SPC m s o~       | switch to other repl instance (cider-repl-switch-to-other)                 |
+| ~SPC m s q n~     | reload namespace in REPL (cider-ns-reload)                                 |
+| ~SPC m s q N~     | reload all namespace in REPL (cider-ns-reload-all)                         |
+| ~SPC m s q q~     | quit REPL (cider-quit)                                                     |
+| ~SPC m s q r~     | restart REPL (cider-restart)                                               |
+| ~SPC m s r~       | send and eval region in REPL                                               |
+| ~SPC m s R~       | send and eval region and switch to REPL in =insert state=                  |
+| ~SPC m e u~       | require Clojure utils into current namespace - i.e. =doc= =source=         |
+| ~SPC m s p~       | print last sexp (clojure interaction mode only)                            |
 
 *** Tests
 
@@ -564,7 +572,7 @@ Use the Evaluation keybindings when evaluating in source code buffer.
 | ~SPC m T t~ | toggle auto test mode       |
 
 *** Debugging
-TODO: separate clojure-mode and sayid keybindings
+TODO: separate clojure-mode and sayid key bindings
 
 | Key binding   | Description                                        |
 |---------------+----------------------------------------------------|
@@ -600,6 +608,8 @@ The following refactoring key bindings are enabled by default in clojure-mode:
 
 | Key binding   | Description                                                    |
 |---------------+----------------------------------------------------------------|
+| ~SPC m r a n~ | insert a namespace form at the beginning of the buffer         |
+| ~SPC m r a N~ | insert a namespace form at point                               |
 | ~SPC m r c i~ | cycle between if and if-not forms                              |
 | ~SPC m r c p~ | cycle privacy of defn and def forms                            |
 | ~SPC m r c (~ | convert coll to list                                           |
@@ -607,6 +617,7 @@ The following refactoring key bindings are enabled by default in clojure-mode:
 | ~SPC m r c {~ | convert coll to map                                            |
 | ~SPC m r c #~ | convert coll to set                                            |
 | ~SPC m r c [~ | convert coll to vector                                         |
+| ~SPC m r s n~ | sort namespaces inside the ns form                             |
 | ~SPC m r t f~ | rewrite the following form to use the -> (thread first) macro. |
 | ~SPC m r t l~ | rewrite the following form to use the ->> (thread last) macro. |
 | ~SPC m r t h~ | thread another form into the surrounding threading macro       |
@@ -656,13 +667,13 @@ The following refactorings require cljr-refactor to be enabled and generally dep
 
 | Key binding   | Description             |
 |---------------+-------------------------|
-| ~SPC m = =~  | reformat current buffer |
+| ~SPC m = =~   | reformat current buffer |
 | ~SPC m = e b~ | reformat edn buffer     |
 | ~SPC m = e e~ | reformat edn last sexp  |
 | ~SPC m = e r~ | reformat edn region     |
 | ~SPC m = f~   | reformat current sexp   |
 | ~SPC m = l~   | realign current form    |
-| ~SPC m = r~   | realign current region |
+| ~SPC m = r~   | realign current region  |
 
 *** Profiling
 

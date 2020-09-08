@@ -123,6 +123,12 @@ community will help you out.
 If you prefer IRC, connect to the [Gitter Chat IRC server][] and join the
 `#syl20bnr/spacemacs` channel.
 
+Last but not least there are a lot of high class tutorials available on YouTube:
+* Jack of Some's Spacemacs related channel [here](https://www.youtube.com/watch?v=r-BHx7VNX5s&list=PLd_Oyt6lAQ8Rxb0HUnGbRrn6R4Cdt2yoI)
+* GDQuest's Game Design oriented tutorials to Spacemacs [here](https://www.youtube.com/watch?v=hCNOB5jjtmc&list=PLhqJJNjsQ7KFkMVBunWWzFD8SlH714qm4)
+* Practicalli's Clojure tutorials based on Spacemacs [here](https://www.youtube.com/watch?v=ZKuQDrQLAnc&list=PLpr9V-R8ZxiCHMl2_dn1Fovcd34Oz45su)
+* Eivind Fonn's classic Spacemacs ABC [here](https://www.youtube.com/watch?v=ZFV5EqpZ6_s&list=PLrJ2YN5y27KLhd3yNs2dR8_inqtEiEweE)
+
 # Prerequisites
 Spacemacs is an extension of a popular text editor called Emacs. Thus you need
 to first install base Emacs and then download the Spacemacs extension files with
@@ -155,7 +161,12 @@ This might also be true for other linux distributions.
 
 ```
 brew tap d12frosted/emacs-plus
+# to install Emacs 26
 brew install emacs-plus
+# or to install Emacs 27
+brew install emacs-plus@27 --with-spacemacs-icon
+# or to install Emacs 28
+brew install emacs-plus@28 --with-spacemacs-icon
 brew link emacs-plus
 ```
 
@@ -500,19 +511,19 @@ the spacemacs badge: [![Built with Spacemacs](https://cdn.rawgit.com/syl20bnr/sp
 
 - For Markdown:
 
-   ```
+   ```markdown
    [![Built with Spacemacs](https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg)](http://spacemacs.org)
    ```
 
 - For HTML:
 
-   ```
-   <a href="http://spacemacs.org"><img src="https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg" /></a>
+   ```html
+   <a href="http://spacemacs.org"><img alt="Built with Spacemacs" src="https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg" /></a>
    ```
 
 - For Org-mode:
 
-   ```
+   ```org
    [[http://spacemacs.org][file:https://cdn.rawgit.com/syl20bnr/spacemacs/442d025779da2f62fc86c2082703697714db6514/assets/spacemacs-badge.svg]]
    ```
 

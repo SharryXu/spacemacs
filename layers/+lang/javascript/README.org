@@ -8,6 +8,7 @@
 - [[#description][Description]]
   - [[#features][Features:]]
 - [[#install][Install]]
+  - [[#error-checking--linting][Error checking / linting]]
   - [[#web-beautify][web-beautify]]
   - [[#prettier][prettier]]
   - [[#import-js][import-js]]
@@ -16,6 +17,7 @@
   - [[#format-buffer-before-saving][Format buffer before saving]]
 - [[#backends][Backends]]
   - [[#tern][Tern]]
+  - [[#tide][Tide]]
   - [[#language-server-protocol][Language Server Protocol]]
     - [[#typescript][TypeScript]]
     - [[#flow][Flow]]
@@ -58,26 +60,30 @@ To use this configuration layer, add it to your =~/.spacemacs=. You will need to
 add =javascript= to the existing =dotspacemacs-configuration-layers= list in
 this file.
 
-To enable the importing helper, install the =ImportJS=:
-
-#+BEGIN_SRC sh
-  $ npm install -g import-js
-#+END_SRC
-
-To activate error checking using flycheck, install one of the [[http://www.flycheck.org/en/latest/languages.html#javascript][available linters]]
-such as =ESLint= or =JSHint=:
+** Error checking / linting
+To activate error checking / linting using flycheck, install on your system one of the [[http://www.flycheck.org/en/latest/languages.html#javascript][available linters]]
+such as =ESLint=, =JSHint= or =StandardJS=:
 
 #+BEGIN_SRC sh
   $ npm install -g eslint
   # or
   $ npm install -g jshint
+  # or
+  $ npm install -g standard
 #+END_SRC
 
-If you install these in non-standard locations, then add the following to your
+If you install these in non-standard locations, add the following to your
 =dotspacemacs/user-init= function:
 
 #+BEGIN_SRC elisp
   (add-to-list 'exec-path "/path/to/node/bins" t)
+#+END_SRC
+
+Finally, you will want to turn off js2-mode warnings, since they might be
+in conflict with the linter you are using via flycheck:
+
+#+BEGIN_SRC elisp
+  (javascript :variables js2-mode-show-strict-warnings nil)
 #+END_SRC
 
 ** web-beautify
@@ -88,6 +94,12 @@ See [[file:../../+tools/prettier/README.org][prettier layer]] documentation.
 
 ** import-js
 See [[file:../../+tools/import-js/README.org][import-js layer]] documentation.
+
+Install =ImportJS= on your system:
+
+#+BEGIN_SRC sh
+  $ npm install -g import-js
+#+END_SRC
 
 To enable it, set the layer variable =javascript-import-tool=:
 
@@ -164,6 +176,9 @@ Default is =’web-beautify=.
 ** Tern
 See [[file:../../+tools/tern/README.org][tern layer]] documentation.
 
+** Tide
+See [[file:../../+tools/tide/README.org][tide layer]] documentation.
+
 ** Language Server Protocol
 To use an LSP server with JavaScript, add it as a =javascript-backend= to your
 =~/.spacemacs=.
@@ -196,7 +211,7 @@ You have to install =flow-bin=.
 #+END_SRC
 
 Or, if you'd rather use a locally-installed =flow-bin= from your project's
-node_modules directory, see the [[Node Modules][node-add-modules-path setting]].
+node_modules directory, see the [[#node-modules][node-add-modules-path setting]].
 
 *** Debugger (dap integration)
 To install the debug adapter you may run =M-x dap-firefox-setup= or
@@ -281,10 +296,10 @@ variable to =t= in the =javascript= config section:
 #+END_SRC
 
 ** Flow/Typescript
-   Enable the [[Language Server Protocol][lsp]] backend to view type information, jump to declarations, and more.
+Enable the [[#language-server-protocol][lsp]] backend to view type information, jump to declarations, and more.
 
-   js2-mode is sometimes confused by the type syntax, so you may wish to disable their
-   parse warnings:
+js2-mode is sometimes confused by the type syntax, so you may wish to disable their
+parse warnings:
 
 #+BEGIN_SRC emacs-lisp
   (javascript :variables javascript-backend 'lsp

@@ -33,7 +33,7 @@ file.
 Zetteldeft support is included with the layer. To enable it, set the layer variable ~deft-zetteldeft~ to ~t~:
 
 #+BEGIN_SRC elisp
-(deft :variables deft-zetteldeft t)
+  (deft :variables deft-zetteldeft t)
 #+END_SRC
 
 ** Configuration
@@ -59,7 +59,7 @@ Just add or substitute your preferred extension.
 
 | Key binding | Description                      |
 |-------------+----------------------------------|
-| ~SPC a n~   | Open Deft (works globally)       |
+| ~SPC a r d~ | Open Deft (works globally)       |
 | ~SPC C d~   | Create new file (works globally) |
 | ~SPC m c~   | Clear deft filter                |
 | ~SPC m d~   | Delete selected note             |
@@ -71,18 +71,17 @@ Just add or substitute your preferred extension.
 | ~SPC m q~   | quit deft window                 |
 
 ** Zetteldeft key bindings
-
-   Zetteldeft key bindings will appear in a few different places as follows:
+Zetteldeft key bindings will appear in a few different places as follows:
 
 *** Global
 
-| Key binding               | Description                    |
-|---------------------------+--------------------------------|
-| ~SPC C z~ / ~SPC a n z n~ | New zetteldeft file            |
-| ~SPC a n n~               | Open deft (replaces ~SPC a n~) |
-| ~SPC a n z T~             | Show tag buffer                |
-| ~SPC a n z s~             | Zetteldeft search-at-point     |
-| ~SPC a n z o~             | Zetteldeft find file           |
+| Key binding                 | Description                      |
+|-----------------------------+----------------------------------|
+| ~SPC C z~ / ~SPC a r d z n~ | New zetteldeft file              |
+| ~SPC a r d n~               | Open deft (replaces ~SPC a r d~) |
+| ~SPC a r d z T~             | Show tag buffer                  |
+| ~SPC a r d z s~             | Zetteldeft search-at-point       |
+| ~SPC a r d z o~             | Zetteldeft find file             |
 
 *** Org-mode
 

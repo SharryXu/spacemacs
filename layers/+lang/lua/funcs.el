@@ -29,42 +29,18 @@
 (defun spacemacs//lua-setup-company ()
   "Conditionally setup company based on backend."
   (pcase lua-backend
-    (`lsp-emmy (spacemacs//lua-setup-lsp-company))
     (_ (spacemacs//lua-setup-company-lua))))
-
-(defun spacemacs//lua-setup-flycheck ()
-  "Conditionally setup flycheck based on backend."
-  (pcase lua-backend
-    (`lsp-emmy (spacemacs//lua-setup-lsp-flycheck))))
 
 
 ;; LSP Lua
 (defun spacemacs//lua-setup-lsp-emmy ()
   "Setup LSP Lua."
-  (require 'lsp-clients)
   (when lua-lsp-emmy-java-path
     (setq lsp-clients-emmy-lua-java-path lua-lsp-emmy-java-path))
   (when lua-lsp-emmy-jar-path
     (setq lsp-clients-emmy-lua-jar-path (expand-file-name lua-lsp-emmy-jar-path)))
   (setq lsp-enable-file-watchers lua-lsp-emmy-enable-file-watchers)
   (lsp))
-
-(defun spacemacs//lua-setup-lsp-company ()
-  "Setup lsp auto-completion."
-  (spacemacs|add-company-backends
-    :backends company-lsp
-    :modes lua-mode
-    :append-hooks nil
-    :call-hooks t)
-  ;; TODO: disable the cache
-  ;; (add-to-list 'company-lsp-filter-candidates '(emmy-lua . t))
-  (company-mode))
-
-(defun spacemacs//lua-setup-lsp-flycheck ()
-  "Setup LSP Lua syntax checking."
-  (when (spacemacs/enable-flycheck 'lua-mode)
-    (lsp-ui-flycheck-enable nil)
-    (flycheck-mode)))
 
 
 ;; Lua mode
